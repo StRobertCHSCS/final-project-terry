@@ -1,8 +1,8 @@
 import arcade
 
 
-WIDTH = 1360
-HEIGHT = 680
+WIDTH = 1280
+HEIGHT = 720
 position_x = WIDTH/2
 position_y = HEIGHT/2
 
@@ -14,6 +14,8 @@ bullet_list_x, bullet_list_y = [], []
 bullet_count = 0
 bullet_index = []
 bullet_timer = 0
+
+wall = arcade.load_texture("images/wall.png")
 
 
 def on_update(delta_time):
@@ -28,14 +30,14 @@ def on_update(delta_time):
     if left_pressed:
         position_x -= 5
 
-    if position_x > 1335:
-        position_x = 1335
-    if position_x < 25:
-        position_x = 25
-    if position_y > 675:
-        position_y = 675
-    if position_y < 25:
-        position_y = 25
+    if position_x > 1175:
+        position_x = 1175
+    if position_x < 105:
+        position_x = 105
+    if position_y > 615:
+        position_y = 615
+    if position_y < 105:
+        position_y = 105
 
     if fire and bullet_timer == 0:
         bullet_list_x.append(position_x)
@@ -46,7 +48,7 @@ def on_update(delta_time):
     for i in range(bullet_count):
         bullet_list_y[i] += 10
 
-        if bullet_list_y[i] >= 700:
+        if bullet_list_y[i] >= 640:
             bullet_index.append(i)
 
     for j in bullet_index:
@@ -63,12 +65,13 @@ def on_draw():
     arcade.start_render()
     # Draw in here...
 
-    for row in range(17):
-        for column in range(34):
+    for row in range(9):
+        for column in range(16):
             if grid[row][column] == 0:
-                arcade.draw_rectangle_filled(20 + (column * 40), 20 + (row * 40), 40, 40, arcade.color.GRAY)
+                arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.GRAY_BLUE)
             else:
-                arcade.draw_rectangle_filled(20 + (column * 40), 20 + (row * 40), 40, 40, arcade.color.BLACK)
+                # arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.BLACK)
+                arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, wall)
 
             """
             if column%2 == 0:
@@ -134,16 +137,16 @@ def setup():
     window.on_key_release = on_key_release
     window.on_mouse_press = on_mouse_press
 
-    for row in range(17):
+    for row in range(9):
         grid.append([])
-        for column in range(34):
+        for column in range(16):
             grid[row].append(0)
 
-    for row in range(17):
-        for column in range(34):
-            if row == 0 or row == 16:
+    for row in range(9):
+        for column in range(16):
+            if row == 0 or row == 8:
                 grid[row][column] = 1
-            elif column == 0 or column == 33:
+            elif column == 0 or column == 15:
                 grid[row][column] = 1
 
     print(grid)
