@@ -16,6 +16,7 @@ bullet_count = 0
 bullet_index = []
 bullet_timer = 0
 
+char_model = arcade.load_texture("images/Model1_Right.png")
 wall = arcade.load_texture("images/wall.png")
 
 
@@ -87,10 +88,10 @@ def on_draw():
                     arcade.draw_rectangle_filled(20 + (row * 40), 20 + (column * 40), 40, 40, arcade.color.BLACK)
             """
 
-    arcade.draw_circle_filled(position_x, position_y, 25, arcade.color.BLUE)
     for i in range(bullet_count):
         arcade.draw_rectangle_filled(bullet_list_x[i], bullet_list_y[i], 5, 10, arcade.color.YELLOW)
-
+    # arcade.draw_circle_filled(position_x, position_y, 25, arcade.color.BLUE)
+    arcade.draw_texture_rectangle(position_x, position_y, 60, 102, char_model)
 
 def on_key_press(key, modifiers):
     global up_pressed, down_pressed, right_pressed, left_pressed, fire
