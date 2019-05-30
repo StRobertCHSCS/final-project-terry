@@ -191,7 +191,7 @@ def setup():
             elif column == 0 or column == 15:
                 grid[row][column] = 1
 
-    grid[5][3] = 1
+    # grid[5][3] = 1
 
     arcade.run()
 
