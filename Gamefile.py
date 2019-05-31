@@ -42,9 +42,6 @@ def on_update(delta_time):
         position_y = 105
 
     if fire and bullet_timer == 0:
-        bullet_list_x.append(position_x)
-        bullet_list_y.append(position_y)
-
         if player_idle_up:
             bullet_direction.append("up")
         elif player_idle_down:
@@ -53,8 +50,9 @@ def on_update(delta_time):
             bullet_direction.append("right")
         elif player_idle_left:
             bullet_direction.append("left")
-        else:
-            bullet_direction.append("down")
+
+        bullet_list_x.append(position_x)
+        bullet_list_y.append(position_y)
 
         bullet_count += 1
         bullet_timer = 20
@@ -71,7 +69,7 @@ def on_update(delta_time):
 
         if bullet_list_y[i] >= 640 or bullet_list_y[i] <= 80 or bullet_list_x[i] >= 1200 or bullet_list_x[i] <= 80:
             bullet_index.append(i)
-    for j in bullet_index:
+    for _ in bullet_index:
         bullet_list_x.pop(0)
         bullet_list_y.pop(0)
         bullet_direction.pop(0)
@@ -119,8 +117,6 @@ def on_draw():
         arcade.draw_text("right", position_x, position_y, arcade.color.BLACK, 12)
     elif player_idle_left:
         arcade.draw_text("left", position_x, position_y, arcade.color.BLACK, 12)
-    else:
-        arcade.draw_text("down", position_x, position_y, arcade.color.BLACK, 12)
 
 
 def on_key_press(key, modifiers):
@@ -128,16 +124,16 @@ def on_key_press(key, modifiers):
         player_idle_right, player_idle_left
     if key == arcade.key.W:
         up_pressed = True
-        player_idle_up = True
+        player_idle_up, player_idle_down, player_idle_right, player_idle_left = True, False, False, False
     if key == arcade.key.S:
         down_pressed = True
-        player_idle_down = True
+        player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, True, False, False
     if key == arcade.key.D:
         right_pressed = True
-        player_idle_right = True
+        player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, True, False
     if key == arcade.key.A:
         left_pressed = True
-        player_idle_left = True
+        player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, False, True
 
     if key == arcade.key.SPACE:
         fire = True
@@ -148,16 +144,12 @@ def on_key_release(key, modifiers):
         player_idle_right, player_idle_left
     if key == arcade.key.W:
         up_pressed = False
-        player_idle_up = False
     if key == arcade.key.S:
         down_pressed = False
-        player_idle_down = False
     if key == arcade.key.D:
         right_pressed = False
-        player_idle_right = False
     if key == arcade.key.A:
         left_pressed = False
-        player_idle_left = False
 
     if key == arcade.key.SPACE:
         fire = False
