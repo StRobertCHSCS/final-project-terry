@@ -33,6 +33,7 @@ def on_update(delta_time):
     if left_pressed:
         position_x -= 5
 
+    # temporary
     if position_x > 1175:
         position_x = 1175
     if position_x < 105:
@@ -42,6 +43,9 @@ def on_update(delta_time):
     if position_y < 105:
         position_y = 105
 
+    print(position_x, position_y)
+
+    # bullet code
     if fire and bullet_timer == 0:
         if fire_up:
             bullet_direction.append("up")
@@ -85,7 +89,6 @@ def on_update(delta_time):
 def on_draw():
     arcade.start_render()
     # Draw in here...
-
     for row in range(9):
         for column in range(16):
             if grid[row][column] == 0:
@@ -212,6 +215,8 @@ def setup():
                 grid[row][column] = 1
             elif column == 0 or column == 15:
                 grid[row][column] = 1
+
+    grid[5][5] = 1
 
     arcade.run()
 
