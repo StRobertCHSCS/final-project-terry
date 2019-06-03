@@ -43,6 +43,9 @@ def on_update(delta_time):
     if position_y < 105:
         position_y = 105
 
+    if 375 < position_x < 505 and 375 < position_y < 505:
+        print("INSIDE")
+
     print(position_x, position_y)
 
     # bullet code
