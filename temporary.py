@@ -12,6 +12,8 @@ fire_up, fire_down, fire_right, fire_left = False, False, False, False
 
 grid = []
 
+collision_up, collision_down, collision_right, collision_left = True, True, True, True
+
 bullet_list_x, bullet_list_y, bullet_direction = [], [], []
 bullet_count = 0
 bullet_index = []
@@ -22,7 +24,8 @@ wall = arcade.load_texture("images/wall.png")
 
 
 def on_update(delta_time):
-    global position_x, position_y, bullet_direction, bullet_count, bullet_index, bullet_timer
+    global position_x, position_y, bullet_direction, bullet_count, bullet_index, bullet_timer, collision_up, \
+        collision_down, collision_right, collision_left
 
     if up_pressed:
         position_y += 5
@@ -44,9 +47,23 @@ def on_update(delta_time):
         position_y = 105
 
     if 375 < position_x < 505 and 375 < position_y < 505:
-        print("INSIDE")
+        if player_idle_up and collision_down and collision_right and collision_left:
+            position_y = 375
+            collision_up = False
+        elif player_idle_down and collision_up and collision_right and collision_left:
+            position_y = 505
+            collision_down = False
+        if player_idle_right and collision_up and collision_down and collision_left:
+            position_x = 375
+            collision_right = False
+        elif player_idle_left and collision_up and collision_down and collision_right:
+            position_x = 505
+            collision_left = False
+    else:
+        collision_up, collision_down, collision_right, collision_left = True, True, True, True
 
-    print(position_x, position_y)
+    # print(collision_up, collision_down, collision_right, collision_left)
+    print(player_idle_up, player_idle_down, player_idle_right, player_idle_left)
 
     # bullet code
     if fire and bullet_timer == 0:
@@ -140,16 +157,16 @@ def on_key_press(key, modifiers):
         player_idle_right, player_idle_left, fire_up, fire_down, fire_right, fire_left
     if key == arcade.key.W:
         up_pressed = True
-        player_idle_up, player_idle_down, player_idle_right, player_idle_left = True, False, False, False
+        player_idle_up = True
     if key == arcade.key.S:
         down_pressed = True
-        player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, True, False, False
+        player_idle_down = True
     if key == arcade.key.D:
         right_pressed = True
-        player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, True, False
+        player_idle_right = True
     if key == arcade.key.A:
         left_pressed = True
-        player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, False, True
+        player_idle_left = True
 
     if key == arcade.key.UP:
         fire_up, fire_down, fire_right, fire_left = True, False, False, False
@@ -170,12 +187,16 @@ def on_key_release(key, modifiers):
         player_idle_right, player_idle_left, fire_up, fire_down, fire_right, fire_left
     if key == arcade.key.W:
         up_pressed = False
+        player_idle_up = False
     if key == arcade.key.S:
         down_pressed = False
+        player_idle_down = False
     if key == arcade.key.D:
         right_pressed = False
+        player_idle_right = False
     if key == arcade.key.A:
         left_pressed = False
+        player_idle_left = False
 
     if key == arcade.key.UP:
         fire_up = False

@@ -3,12 +3,15 @@ import arcade
 
 WIDTH = 1280
 HEIGHT = 720
-position_x = WIDTH/2
-position_y = HEIGHT/2
+position_x = 120
+position_y = 120
 
 up_pressed, down_pressed, right_pressed, left_pressed, fire = False, False, False, False, False
 player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, False, False
 fire_up, fire_down, fire_right, fire_left = False, False, False, False
+
+move_up, move_down, move_right, move_left = True, True, True, True
+move = 0
 
 grid = []
 
@@ -22,16 +25,37 @@ wall = arcade.load_texture("images/wall.png")
 
 
 def on_update(delta_time):
-    global position_x, position_y, bullet_direction, bullet_count, bullet_index, bullet_timer
+    global position_x, position_y, bullet_direction, bullet_count, bullet_index, bullet_timer, move_up, move_down, \
+        move_right, move_left, move
 
-    if up_pressed:
-        position_y += 5
-    if down_pressed:
-        position_y -= 5
-    if right_pressed:
-        position_x += 5
-    if left_pressed:
-        position_x -= 5
+    if (up_pressed and move_down and move_right and move_left) or not move_up:
+        position_y += 10
+        move += 10
+        move_up = False
+        if move == 80:
+            move_up = True
+            move = 0
+    elif (down_pressed and move_up and move_right and move_left) or not move_down:
+        position_y -= 10
+        move += 10
+        move_down = False
+        if move == 80:
+            move_down = True
+            move = 0
+    elif (right_pressed and move_up and move_down and move_left) or not move_right:
+        position_x += 10
+        move += 10
+        move_right = False
+        if move == 80:
+            move_right = True
+            move = 0
+    elif (left_pressed and move_up and move_down and move_right) or not move_left:
+        position_x -= 10
+        move += 10
+        move_left = False
+        if move == 80:
+            move_left = True
+            move = 0
 
     # temporary
     if position_x > 1175:
@@ -44,16 +68,9 @@ def on_update(delta_time):
         position_y = 105
 
     if 375 < position_x < 505 and 375 < position_y < 505:
-        if player_idle_up:
-            position_y = 375
-        elif player_idle_down:
-            position_y = 505
-        elif player_idle_right:
-            position_x = 375
-        elif player_idle_left:
-            position_x = 505
+        print("INSIDE")
 
-    print(position_x, position_y)
+    print(position_x // 80, position_y // 80)
 
     # bullet code
     if fire and bullet_timer == 0:
