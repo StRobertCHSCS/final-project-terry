@@ -3,15 +3,18 @@ import arcade
 
 WIDTH = 1280
 HEIGHT = 720
-position_x = 120
-position_y = 120
+
+player_x_coord = 1
+player_y_coord = 1
+player_speed = 10
+x_move, y_move = 0, 0
+move_up, move_down, move_right, move_left = True, True, True, True
+movable = True
 
 up_pressed, down_pressed, right_pressed, left_pressed, fire = False, False, False, False, False
 player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, False, False
 fire_up, fire_down, fire_right, fire_left = False, False, False, False
 
-move_up, move_down, move_right, move_left = True, True, True, True
-move = 0
 
 grid = []
 
@@ -24,53 +27,69 @@ char_model = arcade.load_texture("images/Model1_Right.png")
 wall = arcade.load_texture("images/wall.png")
 
 
+def tile_check():
+    global movable
+    if up_pressed:
+        if grid[player_y_coord + 1][player_x_coord] == 1:
+            movable = False
+        else:
+            movable = True
+    elif down_pressed:
+        if grid[player_y_coord - 1][player_x_coord] == 1:
+            movable = False
+        else:
+            movable = True
+    elif right_pressed:
+        if grid[player_y_coord][player_x_coord + 1] == 1:
+            movable = False
+        else:
+            movable = True
+    elif left_pressed:
+        if grid[player_y_coord][player_x_coord - 1] == 1:
+            movable = False
+        else:
+            movable = True
+
+
 def on_update(delta_time):
     global position_x, position_y, bullet_direction, bullet_count, bullet_index, bullet_timer, move_up, move_down, \
-        move_right, move_left, move
+        move_right, move_left, x_move, y_move, player_x_coord, player_y_coord
 
-    if (up_pressed and move_down and move_right and move_left) or not move_up:
-        position_y += 10
-        move += 10
-        move_up = False
-        if move == 80:
+    position_x, position_y = 40 + (player_x_coord * 80) + x_move, 40 + (player_y_coord * 80) + y_move
+
+    tile_check()
+    if (up_pressed and move_down and move_right and move_left and movable) or not move_up:
+        if y_move < 80:
+            y_move += player_speed
+            move_up = False
+        else:
+            player_y_coord += 1
             move_up = True
-            move = 0
-    elif (down_pressed and move_up and move_right and move_left) or not move_down:
-        position_y -= 10
-        move += 10
-        move_down = False
-        if move == 80:
+            y_move = 0
+    elif down_pressed and move_up and move_right and move_left and movable or not move_down:
+        if y_move > -80:
+            y_move -= player_speed
+            move_down = False
+        else:
+            player_y_coord -= 1
             move_down = True
-            move = 0
-    elif (right_pressed and move_up and move_down and move_left) or not move_right:
-        position_x += 10
-        move += 10
-        move_right = False
-        if move == 80:
+            y_move = 0
+    elif right_pressed and move_up and move_down and move_left and movable or not move_right:
+        if x_move < 80:
+            x_move += player_speed
+            move_right = False
+        else:
+            player_x_coord += 1
             move_right = True
-            move = 0
-    elif (left_pressed and move_up and move_down and move_right) or not move_left:
-        position_x -= 10
-        move += 10
-        move_left = False
-        if move == 80:
+            x_move = 0
+    elif left_pressed and move_up and move_down and move_right and movable or not move_left:
+        if x_move > -80:
+            x_move -= player_speed
+            move_left = False
+        else:
+            player_x_coord -= 1
             move_left = True
-            move = 0
-
-    # temporary
-    if position_x > 1175:
-        position_x = 1175
-    if position_x < 105:
-        position_x = 105
-    if position_y > 615:
-        position_y = 615
-    if position_y < 105:
-        position_y = 105
-
-    if 375 < position_x < 505 and 375 < position_y < 505:
-        print("INSIDE")
-
-    print(position_x // 80, position_y // 80)
+            x_move = 0
 
     # bullet code
     if fire and bullet_timer == 0:
@@ -99,7 +118,7 @@ def on_update(delta_time):
         elif bullet_direction[i] == "left":
             bullet_list_x[i] -= 20
 
-        if bullet_list_y[i] >= 640 or bullet_list_y[i] <= 80 or bullet_list_x[i] >= 1200 or bullet_list_x[i] <= 80:
+        if grid[bullet_list_y[i]//80][bullet_list_x[i]//80] == 1:
             bullet_index.append(i)
 
     for _ in bullet_index:
@@ -244,6 +263,9 @@ def setup():
                 grid[row][column] = 1
 
     grid[5][5] = 1
+    grid[6][7] = 1
+    grid[4][8] = 1
+    grid[2][3] = 1
 
     arcade.run()
 
