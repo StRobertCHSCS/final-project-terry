@@ -15,6 +15,8 @@ up_pressed, down_pressed, right_pressed, left_pressed, fire = False, False, Fals
 player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, False, False
 fire_up, fire_down, fire_right, fire_left = False, False, False, False
 
+map_setup = False
+mapcounter = 1
 
 grid = []
 
@@ -26,34 +28,50 @@ bullet_timer = 0
 char_model = arcade.load_texture("images/Model1_Right.png")
 wall = arcade.load_texture("images/wall.png")
 
+# temporary
+temporary_var = "NOT ACTIVATED"
+mapcounter_cheat = False
+
 
 def tile_check():
-    global movable
+    global movable, player_speed
     if up_pressed:
         if grid[player_y_coord + 1][player_x_coord] == 1:
             movable = False
+        elif grid[player_y_coord + 1][player_x_coord] == 2:
+            player_speed = 20
         else:
             movable = True
+            player_speed = 10
     elif down_pressed:
         if grid[player_y_coord - 1][player_x_coord] == 1:
             movable = False
+        elif grid[player_y_coord - 1][player_x_coord] == 2:
+            player_speed = 20
         else:
             movable = True
+            player_speed = 10
     elif right_pressed:
         if grid[player_y_coord][player_x_coord + 1] == 1:
             movable = False
+        elif grid[player_y_coord][player_x_coord + 1] == 2:
+            player_speed = 20
         else:
             movable = True
+            player_speed = 10
     elif left_pressed:
         if grid[player_y_coord][player_x_coord - 1] == 1:
             movable = False
+        elif grid[player_y_coord][player_x_coord - 1] == 2:
+            player_speed = 20
         else:
             movable = True
+            player_speed = 10
 
 
 def on_update(delta_time):
     global position_x, position_y, bullet_direction, bullet_count, bullet_index, bullet_timer, move_up, move_down, \
-        move_right, move_left, x_move, y_move, player_x_coord, player_y_coord
+        move_right, move_left, x_move, y_move, player_x_coord, player_y_coord, mapcounter, map_setup, temporary_var
 
     position_x, position_y = 40 + (player_x_coord * 80) + x_move, 40 + (player_y_coord * 80) + y_move
 
@@ -120,6 +138,9 @@ def on_update(delta_time):
 
         if grid[bullet_list_y[i]//80][bullet_list_x[i]//80] == 1:
             bullet_index.append(i)
+        elif grid[bullet_list_y[i]//80][bullet_list_x[i]//80] == 3:
+            bullet_index.append(i)
+            temporary_var = "ACTIVATED"
 
     for _ in bullet_index:
         bullet_list_x.pop(0)
@@ -131,6 +152,37 @@ def on_update(delta_time):
     if bullet_timer > 0:
         bullet_timer -= 1
 
+    if mapcounter == 1:
+        grid[5][5] = 1
+        grid[6][7] = 1
+        grid[4][8] = 1
+        grid[2][3] = 2
+        grid[2][4] = 2
+        grid[2][5] = 2
+        grid[2][6] = 2
+        grid[3][12] = 3
+    elif mapcounter > 2:
+        for i in range(1, 6):
+            grid[i][5] = 1
+
+    if map_setup:
+        for row in range(9):
+            for column in range(16):
+                if row == 0 or row == 8:
+                    grid[row][column] = 1
+                elif column == 0 or column == 15:
+                    grid[row][column] = 1
+                else:
+                    grid[row][column] = 0
+
+        map_setup = False
+
+    # temporary
+    print(temporary_var)
+    if mapcounter_cheat:
+        mapcounter += 1
+        map_setup = True
+
 
 def on_draw():
     arcade.start_render()
@@ -139,9 +191,14 @@ def on_draw():
         for column in range(16):
             if grid[row][column] == 0:
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.GRAY_BLUE)
-            else:
-                # arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.BLACK)
+            elif grid[row][column] == 1:
                 arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, wall)
+            elif grid[row][column] == 2:
+                arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.ALICE_BLUE)
+            elif grid[row][column] == 3:
+                arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.YELLOW_ROSE)
+            else:
+                arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.LIGHT_GRAY)
 
             """
             if column%2 == 0:
@@ -180,7 +237,7 @@ def on_draw():
 
 def on_key_press(key, modifiers):
     global up_pressed, down_pressed, right_pressed, left_pressed, fire, player_idle_up, player_idle_down, \
-        player_idle_right, player_idle_left, fire_up, fire_down, fire_right, fire_left
+        player_idle_right, player_idle_left, fire_up, fire_down, fire_right, fire_left, mapcounter_cheat
     if key == arcade.key.W:
         up_pressed = True
         player_idle_up, player_idle_down, player_idle_right, player_idle_left = True, False, False, False
@@ -207,10 +264,14 @@ def on_key_press(key, modifiers):
         fire_up, fire_down, fire_right, fire_left = False, False, False, True
         fire = True
 
+    # temporary
+    if key == arcade.key.KEY_0:
+        mapcounter_cheat = True
+
 
 def on_key_release(key, modifiers):
     global up_pressed, down_pressed, right_pressed, left_pressed, fire, player_idle_up, player_idle_down, \
-        player_idle_right, player_idle_left, fire_up, fire_down, fire_right, fire_left
+        player_idle_right, player_idle_left, fire_up, fire_down, fire_right, fire_left, mapcounter_cheat
     if key == arcade.key.W:
         up_pressed = False
     if key == arcade.key.S:
@@ -232,6 +293,10 @@ def on_key_release(key, modifiers):
     if key == arcade.key.LEFT:
         fire_left = False
         fire = False
+
+    # temporary
+    if key == arcade.key.KEY_0:
+        mapcounter_cheat = False
 
 
 def on_mouse_press(x, y, button, modifiers):
@@ -261,11 +326,6 @@ def setup():
                 grid[row][column] = 1
             elif column == 0 or column == 15:
                 grid[row][column] = 1
-
-    grid[5][5] = 1
-    grid[6][7] = 1
-    grid[4][8] = 1
-    grid[2][3] = 1
 
     arcade.run()
 
