@@ -25,7 +25,10 @@ bullet_count = 0
 bullet_index = []
 bullet_timer = 0
 
-char_model = arcade.load_texture("images/Model1_Right.png")
+char_model_up = arcade.load_texture("images/Model2_Up.png")
+char_model_down = arcade.load_texture("images/Model2_Down.png")
+char_model_right = arcade.load_texture("images/Model2_Right.png")
+char_model_left = arcade.load_texture("images/Model2_Left.png")
 wall = arcade.load_texture("images/wall.png")
 
 # temporary
@@ -40,6 +43,12 @@ def tile_check():
             movable = False
         elif grid[player_y_coord + 1][player_x_coord] == 2:
             player_speed = 20
+        elif grid[player_y_coord + 1][player_x_coord] == 3:
+            pass
+        elif grid[player_y_coord + 1][player_x_coord] == 4:
+            pass
+        elif grid[player_y_coord + 1][player_x_coord] == 5:
+            movable = False
         else:
             movable = True
             player_speed = 10
@@ -48,6 +57,12 @@ def tile_check():
             movable = False
         elif grid[player_y_coord - 1][player_x_coord] == 2:
             player_speed = 20
+        elif grid[player_y_coord - 1][player_x_coord] == 3:
+            pass
+        elif grid[player_y_coord - 1][player_x_coord] == 4:
+            pass
+        elif grid[player_y_coord - 1][player_x_coord] == 5:
+            movable = False
         else:
             movable = True
             player_speed = 10
@@ -56,6 +71,12 @@ def tile_check():
             movable = False
         elif grid[player_y_coord][player_x_coord + 1] == 2:
             player_speed = 20
+        elif grid[player_y_coord][player_x_coord + 1] == 3:
+            pass
+        elif grid[player_y_coord][player_x_coord + 1] == 4:
+            pass
+        elif grid[player_y_coord][player_x_coord + 1] == 5:
+            movable = False
         else:
             movable = True
             player_speed = 10
@@ -64,6 +85,12 @@ def tile_check():
             movable = False
         elif grid[player_y_coord][player_x_coord - 1] == 2:
             player_speed = 20
+        elif grid[player_y_coord][player_x_coord - 1] == 3:
+            pass
+        elif grid[player_y_coord][player_x_coord - 1] == 4:
+            pass
+        elif grid[player_y_coord][player_x_coord - 1] == 5:
+            movable = False
         else:
             movable = True
             player_speed = 10
@@ -161,6 +188,7 @@ def on_update(delta_time):
         grid[2][5] = 2
         grid[2][6] = 2
         grid[3][12] = 3
+        grid[5][13] = 5
     elif mapcounter > 2:
         for i in range(1, 6):
             grid[i][5] = 1
@@ -185,6 +213,7 @@ def on_update(delta_time):
 
 
 def on_draw():
+    global row, column
     arcade.start_render()
     # Draw in here...
     for row in range(9):
@@ -197,6 +226,8 @@ def on_draw():
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.ALICE_BLUE)
             elif grid[row][column] == 3:
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.YELLOW_ROSE)
+            elif grid[row][column] == 5:
+                arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.BROWN)
             else:
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.LIGHT_GRAY)
 
@@ -215,24 +246,35 @@ def on_draw():
 
     for i in range(bullet_count):
         arcade.draw_circle_filled(bullet_list_x[i], bullet_list_y[i], 5, arcade.color.YELLOW)
-    arcade.draw_circle_filled(position_x, position_y, 25, arcade.color.BLUE)
+    # arcade.draw_circle_filled(position_x, position_y, 25, arcade.color.BLUE)
 
     if fire_up:
         arcade.draw_text("up", position_x, position_y, arcade.color.BLACK, 12)
+        arcade.draw_texture_rectangle(position_x, position_y, 48, 80, char_model_up)
     elif fire_down:
         arcade.draw_text("down", position_x, position_y, arcade.color.BLACK, 12)
+        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_down)
     elif fire_right:
         arcade.draw_text("right", position_x, position_y, arcade.color.BLACK, 12)
+        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_right)
     elif fire_left:
         arcade.draw_text("left", position_x, position_y, arcade.color.BLACK, 12)
+        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_left)
     elif player_idle_up:
         arcade.draw_text("up", position_x, position_y, arcade.color.BLACK, 12)
+        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_up)
     elif player_idle_down:
         arcade.draw_text("down", position_x, position_y, arcade.color.BLACK, 12)
+        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_down)
     elif player_idle_right:
         arcade.draw_text("right", position_x, position_y, arcade.color.BLACK, 12)
+        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_right)
     elif player_idle_left:
         arcade.draw_text("left", position_x, position_y, arcade.color.BLACK, 12)
+        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_left)
+    else:
+        arcade.draw_text("up", position_x, position_y, arcade.color.BLACK, 12)
+        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_up)
 
 
 def on_key_press(key, modifiers):

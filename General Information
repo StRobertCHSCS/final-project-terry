@@ -3,8 +3,8 @@ tile value 0: basic tile, no restrictions
 tile value 1: wall tile, cant move through
 tile value 2: speed tile, moves faster thru
 tile value 3: bullet activated tile, shoot to activate something
-tile value 4: ?
-tile value 5: ?
+tile value 4: bullet collection tile, increase bullet able to shoot
+tile value 5: "bullet range" tile, cant move through but bullets can
 
 mapcounter 0: starting screen
 mapcounter 1: movement tutorial, wall tile intro
