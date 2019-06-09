@@ -264,10 +264,10 @@ def on_draw():
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_down)
     elif fire_right:
         arcade.draw_text("right", position_x, position_y, arcade.color.BLACK, 12)
-        arcade.draw_texture_rectangle(position_x, position_y, 56, 84, char_model_right)
+        arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_right)
     elif fire_left:
         arcade.draw_text("left", position_x, position_y, arcade.color.BLACK, 12)
-        arcade.draw_texture_rectangle(position_x, position_y, 56, 84, char_model_left)
+        arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_left)
     elif player_idle_up:
         arcade.draw_text("up", position_x, position_y, arcade.color.BLACK, 12)
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
@@ -276,10 +276,10 @@ def on_draw():
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_down)
     elif player_idle_right:
         arcade.draw_text("right", position_x, position_y, arcade.color.BLACK, 12)
-        arcade.draw_texture_rectangle(position_x, position_y, 56, 84, char_model_right)
+        arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_right)
     elif player_idle_left:
         arcade.draw_text("left", position_x, position_y, arcade.color.BLACK, 12)
-        arcade.draw_texture_rectangle(position_x, position_y, 56, 84, char_model_left)
+        arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_left)
     else:
         arcade.draw_text("up", position_x, position_y, arcade.color.BLACK, 12)
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
