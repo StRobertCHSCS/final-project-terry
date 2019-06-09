@@ -190,8 +190,16 @@ def on_update(delta_time):
         grid[3][12] = 3
         grid[5][13] = 5
     elif mapcounter > 2:
-        for i in range(1, 6):
-            grid[i][5] = 1
+        grid[1][1] = 0
+        grid[1][2] = 1
+        grid[1][3] = 2
+        grid[1][4] = 3
+        grid[1][5] = 5
+
+        grid[6][9] = 5
+        grid[3][1] = 3
+        grid[4][1] = 2
+        grid[5][1] = 1
 
     if map_setup:
         for row in range(9):
@@ -250,31 +258,31 @@ def on_draw():
 
     if fire_up:
         arcade.draw_text("up", position_x, position_y, arcade.color.BLACK, 12)
-        arcade.draw_texture_rectangle(position_x, position_y, 48, 80, char_model_up)
+        arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
     elif fire_down:
         arcade.draw_text("down", position_x, position_y, arcade.color.BLACK, 12)
-        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_down)
+        arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_down)
     elif fire_right:
         arcade.draw_text("right", position_x, position_y, arcade.color.BLACK, 12)
-        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_right)
+        arcade.draw_texture_rectangle(position_x, position_y, 56, 84, char_model_right)
     elif fire_left:
         arcade.draw_text("left", position_x, position_y, arcade.color.BLACK, 12)
-        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_left)
+        arcade.draw_texture_rectangle(position_x, position_y, 56, 84, char_model_left)
     elif player_idle_up:
         arcade.draw_text("up", position_x, position_y, arcade.color.BLACK, 12)
-        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_up)
+        arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
     elif player_idle_down:
         arcade.draw_text("down", position_x, position_y, arcade.color.BLACK, 12)
-        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_down)
+        arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_down)
     elif player_idle_right:
         arcade.draw_text("right", position_x, position_y, arcade.color.BLACK, 12)
-        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_right)
+        arcade.draw_texture_rectangle(position_x, position_y, 56, 84, char_model_right)
     elif player_idle_left:
         arcade.draw_text("left", position_x, position_y, arcade.color.BLACK, 12)
-        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_left)
+        arcade.draw_texture_rectangle(position_x, position_y, 56, 84, char_model_left)
     else:
         arcade.draw_text("up", position_x, position_y, arcade.color.BLACK, 12)
-        arcade.draw_texture_rectangle(position_x, position_y, 80, 80, char_model_up)
+        arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
 
 
 def on_key_press(key, modifiers):
