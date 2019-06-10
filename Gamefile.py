@@ -24,6 +24,9 @@ bullet_list_x, bullet_list_y, bullet_direction = [], [], []
 bullet_count = 0
 bullet_timer = 0
 bullet_index = []
+bullet_amount = 0
+bullet_collected1 = False
+bullet_collected2 = False
 
 char_model_up = arcade.load_texture("images/Model2_Up.png")
 char_model_down = arcade.load_texture("images/Model2_Down.png")
@@ -102,7 +105,8 @@ def tile_check():
 
 def on_update(delta_time):
     global position_x, position_y, bullet_direction, bullet_count, bullet_index, bullet_timer, move_up, move_down, \
-        move_right, move_left, x_move, y_move, player_x_coord, player_y_coord, mapcounter, map_setup, temporary_var
+        move_right, move_left, x_move, y_move, player_x_coord, player_y_coord, mapcounter, map_setup, bullet_amount, \
+        bullet_collected1, bullet_collected2, temporary_var
 
     position_x, position_y = 40 + (player_x_coord * 80) + x_move, 40 + (player_y_coord * 80) + y_move
 
@@ -141,7 +145,7 @@ def on_update(delta_time):
             x_move = 0
 
     # bullet code
-    if fire and bullet_timer == 0:
+    if fire and bullet_amount > 0 and bullet_timer == 0:
         if fire_up:
             bullet_direction.append("up")
         elif fire_down:
@@ -156,6 +160,7 @@ def on_update(delta_time):
 
         bullet_count += 1
         bullet_timer = 20
+        bullet_amount -= 1
 
     for i in range(bullet_count):
         if bullet_direction[i] == "up":
@@ -194,6 +199,15 @@ def on_update(delta_time):
         grid[2][6] = 2
         grid[3][12] = 3
         grid[5][13] = 5
+
+        if not bullet_collected1:
+            grid[3][5] = 4
+        else:
+            grid[3][5] = 0
+        if player_y_coord == 3 and player_x_coord == 5 and not bullet_collected1:
+            bullet_collected1 = True
+            bullet_amount += 1
+
     elif mapcounter > 2:
         grid[1][1] = 0
         grid[1][2] = 1
@@ -238,6 +252,8 @@ def on_draw():
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.ALICE_BLUE)
             elif grid[row][column] == 3:
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.YELLOW_ROSE)
+            elif grid[row][column] == 4:
+                arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.BRONZE_YELLOW)
             elif grid[row][column] == 5:
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.BROWN)
             else:
