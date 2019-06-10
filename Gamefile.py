@@ -22,8 +22,8 @@ grid = []
 
 bullet_list_x, bullet_list_y, bullet_direction = [], [], []
 bullet_count = 0
-bullet_index = []
 bullet_timer = 0
+bullet_index = []
 
 char_model_up = arcade.load_texture("images/Model2_Up.png")
 char_model_down = arcade.load_texture("images/Model2_Down.png")
@@ -43,8 +43,9 @@ def tile_check():
             movable = False
         elif grid[player_y_coord + 1][player_x_coord] == 2:
             player_speed = 20
+            movable = True
         elif grid[player_y_coord + 1][player_x_coord] == 3:
-            pass
+            movable = True
         elif grid[player_y_coord + 1][player_x_coord] == 4:
             pass
         elif grid[player_y_coord + 1][player_x_coord] == 5:
@@ -57,8 +58,9 @@ def tile_check():
             movable = False
         elif grid[player_y_coord - 1][player_x_coord] == 2:
             player_speed = 20
+            movable = True
         elif grid[player_y_coord - 1][player_x_coord] == 3:
-            pass
+            movable = True
         elif grid[player_y_coord - 1][player_x_coord] == 4:
             pass
         elif grid[player_y_coord - 1][player_x_coord] == 5:
@@ -71,8 +73,9 @@ def tile_check():
             movable = False
         elif grid[player_y_coord][player_x_coord + 1] == 2:
             player_speed = 20
+            movable = True
         elif grid[player_y_coord][player_x_coord + 1] == 3:
-            pass
+            movable = True
         elif grid[player_y_coord][player_x_coord + 1] == 4:
             pass
         elif grid[player_y_coord][player_x_coord + 1] == 5:
@@ -85,8 +88,9 @@ def tile_check():
             movable = False
         elif grid[player_y_coord][player_x_coord - 1] == 2:
             player_speed = 20
+            movable = True
         elif grid[player_y_coord][player_x_coord - 1] == 3:
-            pass
+            movable = True
         elif grid[player_y_coord][player_x_coord - 1] == 4:
             pass
         elif grid[player_y_coord][player_x_coord - 1] == 5:
@@ -103,7 +107,7 @@ def on_update(delta_time):
     position_x, position_y = 40 + (player_x_coord * 80) + x_move, 40 + (player_y_coord * 80) + y_move
 
     tile_check()
-    if (up_pressed and move_down and move_right and move_left and movable) or not move_up:
+    if up_pressed and move_down and move_right and move_left and movable or not move_up:
         if y_move < 80:
             y_move += player_speed
             move_up = False
@@ -183,6 +187,7 @@ def on_update(delta_time):
         grid[5][5] = 1
         grid[6][7] = 1
         grid[4][8] = 1
+        grid[3][6] = 1
         grid[2][3] = 2
         grid[2][4] = 2
         grid[2][5] = 2
@@ -210,7 +215,6 @@ def on_update(delta_time):
                     grid[row][column] = 1
                 else:
                     grid[row][column] = 0
-
         map_setup = False
 
     # temporary
