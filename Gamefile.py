@@ -6,6 +6,8 @@ HEIGHT = 720
 
 player_x_coord = 1
 player_y_coord = 1
+start_coord_x = 1
+start_coord_y = 1
 player_speed = 10
 x_move, y_move = 0, 0
 move_up, move_down, move_right, move_left = True, True, True, True
@@ -25,8 +27,7 @@ bullet_count = 0
 bullet_timer = 0
 bullet_index = []
 bullet_amount = 0
-bullet_collected1 = False
-bullet_collected2 = False
+bullet_collected1, bullet_collected2, bullet_activated1, bullet_activated2 = False, False, False, False
 
 char_model_up = arcade.load_texture("images/Model2_Up.png")
 char_model_down = arcade.load_texture("images/Model2_Down.png")
@@ -35,12 +36,65 @@ char_model_left = arcade.load_texture("images/Model2_Left.png")
 wall = arcade.load_texture("images/wall.png")
 
 # temporary
-temporary_var = "NOT ACTIVATED"
 mapcounter_cheat = False
 
 
+def door1(y, x):
+    if bullet_activated1:
+        grid[y][x] = 0
+    else:
+        grid[y][x] = 7
+
+
+def door2(y, x):
+    if bullet_activated2:
+        grid[y][x] = 0
+    else:
+        grid[y][x] = 7
+
+
+def bullet_activate1(y, x):
+    global bullet_activated1
+    grid[y][x] = 3
+    for i in range(bullet_count):
+        if bullet_list_y[i] // 80 == y and bullet_list_x[i] // 80 == x:
+            bullet_index.append(i)
+            bullet_activated1 = True
+
+
+def bullet_activate2(y, x):
+    global bullet_activated2
+    grid[y][x] = 3
+    for i in range(bullet_count):
+        if bullet_list_y[i] // 80 == y and bullet_list_x[i] // 80 == x:
+            bullet_index.append(i)
+            bullet_activated2 = True
+
+
+def bullet_collect1(y, x):
+    global bullet_collected1, bullet_amount
+    if not bullet_collected1:
+        grid[y][x] = 4
+    else:
+        grid[y][x] = 0
+    if player_y_coord == y and player_x_coord == x and not bullet_collected1:
+        bullet_collected1 = True
+        bullet_amount += 1
+
+
+def bullet_collect2(y, x):
+    global bullet_collected2, bullet_amount
+    if not bullet_collected2:
+        grid[y][x] = 4
+    else:
+        grid[y][x] = 0
+    if player_y_coord == y and player_x_coord == x and not bullet_collected2:
+        bullet_collected2 = True
+        bullet_amount += 1
+
+
 def tile_check():
-    global movable, player_speed
+    global movable, player_speed, mapcounter, map_setup
     if up_pressed:
         if grid[player_y_coord + 1][player_x_coord] == 1:
             movable = False
@@ -52,6 +106,8 @@ def tile_check():
         elif grid[player_y_coord + 1][player_x_coord] == 4:
             pass
         elif grid[player_y_coord + 1][player_x_coord] == 5:
+            movable = False
+        elif grid[player_y_coord + 1][player_x_coord] == 7:
             movable = False
         else:
             movable = True
@@ -68,6 +124,8 @@ def tile_check():
             pass
         elif grid[player_y_coord - 1][player_x_coord] == 5:
             movable = False
+        elif grid[player_y_coord - 1][player_x_coord] == 7:
+            movable = False
         else:
             movable = True
             player_speed = 10
@@ -82,6 +140,8 @@ def tile_check():
         elif grid[player_y_coord][player_x_coord + 1] == 4:
             pass
         elif grid[player_y_coord][player_x_coord + 1] == 5:
+            movable = False
+        elif grid[player_y_coord][player_x_coord + 1] == 7:
             movable = False
         else:
             movable = True
@@ -98,15 +158,21 @@ def tile_check():
             pass
         elif grid[player_y_coord][player_x_coord - 1] == 5:
             movable = False
+        elif grid[player_y_coord][player_x_coord - 1] == 7:
+            movable = False
         else:
             movable = True
             player_speed = 10
+
+    if grid[player_y_coord][player_x_coord] == 6:
+        mapcounter += 1
+        map_setup = True
 
 
 def on_update(delta_time):
     global position_x, position_y, bullet_direction, bullet_count, bullet_index, bullet_timer, move_up, move_down, \
         move_right, move_left, x_move, y_move, player_x_coord, player_y_coord, mapcounter, map_setup, bullet_amount, \
-        bullet_collected1, bullet_collected2, temporary_var
+        bullet_collected1, bullet_collected2, bullet_activated1, bullet_activated2, start_coord_x, start_coord_y
 
     position_x, position_y = 40 + (player_x_coord * 80) + x_move, 40 + (player_y_coord * 80) + y_move
 
@@ -174,9 +240,6 @@ def on_update(delta_time):
 
         if grid[bullet_list_y[i]//80][bullet_list_x[i]//80] == 1:
             bullet_index.append(i)
-        elif grid[bullet_list_y[i]//80][bullet_list_x[i]//80] == 3:
-            bullet_index.append(i)
-            temporary_var = "ACTIVATED"
 
     for _ in bullet_index:
         bullet_list_x.pop(0)
@@ -197,28 +260,38 @@ def on_update(delta_time):
         grid[2][4] = 2
         grid[2][5] = 2
         grid[2][6] = 2
-        grid[3][12] = 3
         grid[5][13] = 5
+        grid[6][13] = 6
 
-        if not bullet_collected1:
-            grid[3][5] = 4
-        else:
-            grid[3][5] = 0
-        if player_y_coord == 3 and player_x_coord == 5 and not bullet_collected1:
-            bullet_collected1 = True
-            bullet_amount += 1
+        bullet_collect1(3, 5)
+        bullet_activate1(3, 12)
 
-    elif mapcounter > 2:
-        grid[1][1] = 0
-        grid[1][2] = 1
-        grid[1][3] = 2
-        grid[1][4] = 3
-        grid[1][5] = 5
+    elif mapcounter == 2:
+        start_coord_y, start_coord_x = 2, 2
 
-        grid[6][9] = 5
-        grid[3][1] = 3
-        grid[4][1] = 2
-        grid[5][1] = 1
+        for i in range(4):
+            grid[i][5] = 1
+
+        for i in range(3, 8):
+            grid[i][10] = 1
+
+        grid[6][13] = 6
+
+    elif mapcounter >= 3:
+        start_coord_y, start_coord_x = 2, 2
+
+        grid[1][8] = 1
+        grid[3][8] = 1
+        grid[4][8] = 1
+
+        for i in range(5, 8):
+            grid[i][8] = 5
+
+        bullet_collect1(6, 2)
+        bullet_activate1(6, 13)
+        door1(2, 8)
+
+        grid[2][13] = 6
 
     if map_setup:
         for row in range(9):
@@ -229,10 +302,15 @@ def on_update(delta_time):
                     grid[row][column] = 1
                 else:
                     grid[row][column] = 0
+
+        player_x_coord, player_y_coord = start_coord_x, start_coord_y
         map_setup = False
+        bullet_collected1, bullet_collected2 = False, False
+        bullet_activated1, bullet_activated2 = False, False
+        bullet_amount = 0
 
     # temporary
-    print(temporary_var)
+    print(bullet_activated1, bullet_activated2)
     if mapcounter_cheat:
         mapcounter += 1
         map_setup = True
@@ -256,6 +334,10 @@ def on_draw():
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.BRONZE_YELLOW)
             elif grid[row][column] == 5:
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.BROWN)
+            elif grid[row][column] == 6:
+                arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.PURPLE_HEART)
+            elif grid[row][column] == 7:
+                arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.WARM_BLACK)
             else:
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.LIGHT_GRAY)
 

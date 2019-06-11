@@ -5,10 +5,16 @@ tile value 2: speed tile, moves faster thru
 tile value 3: bullet activated tile, shoot to activate something
 tile value 4: bullet collection tile, increase bullet able to shoot
 tile value 5: "bullet range" tile, cant move through but bullets can
+tile value 6: finish tile, move on to next level
+tile value 7: door tile, opens a tile
 
 mapcounter 0: starting screen
 mapcounter 1: movement tutorial, wall tile intro
 mapcounter 2: bullet tutorial, intro
-mapcounter 3: speed tile tutorial, intro
-mapcounter 4: push/pull tutorial, intro
-mapcounter 5: level 1
+mapcounter 3: push/pull tutorial, intro
+mapcounter 4: level 1
+
+extra code needed:
+door
+bullet collection
+bullet activation
