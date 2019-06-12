@@ -17,10 +17,15 @@ up_pressed, down_pressed, right_pressed, left_pressed, fire = False, False, Fals
 player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, False, False
 fire_up, fire_down, fire_right, fire_left = False, False, False, False
 
-map_setup = False
+map_setup = True
 mapcounter = 1
 
 grid = []
+
+pushtile_x_coord = []
+pushtile_y_coord = []
+pushtile_x_pos = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+pushtile_y_pos = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 bullet_list_x, bullet_list_y, bullet_direction = [], [], []
 bullet_count = 0
@@ -164,6 +169,40 @@ def tile_check():
             movable = True
             player_speed = 10
 
+    for i in range(len(pushtile_x_coord)):
+        if pushtile_x_coord[i] == player_x_coord and pushtile_y_coord[i] - 1 == player_y_coord and (up_pressed or not move_up):
+            print("true")
+            pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
+            pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
+            if y_move < 80:
+                pass
+            else:
+                pushtile_y_coord[i] += 1
+        elif pushtile_x_coord[i] == player_x_coord and pushtile_y_coord[i] + 1 == player_y_coord and (down_pressed or not move_down):
+            print("true")
+            pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
+            pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
+            if y_move > -80:
+                pass
+            else:
+                pushtile_y_coord[i] -= 1
+        elif pushtile_y_coord[i] == player_y_coord and pushtile_x_coord[i] - 1 == player_x_coord and (right_pressed or not move_right):
+            print("true")
+            pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
+            pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
+            if x_move < 80:
+                pass
+            else:
+                pushtile_x_coord[i] += 1
+        elif pushtile_y_coord[i] == player_y_coord and pushtile_x_coord[i] + 1 == player_x_coord and (left_pressed or not move_left):
+            print("true")
+            pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
+            pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
+            if x_move > -80:
+                pass
+            else:
+                pushtile_x_coord[i] -= 1
+
     if grid[player_y_coord][player_x_coord] == 6:
         mapcounter += 1
         map_setup = True
@@ -255,7 +294,7 @@ def on_update(delta_time):
         grid[5][5] = 1
         grid[6][7] = 1
         grid[4][8] = 1
-        grid[3][6] = 1
+
         grid[2][3] = 2
         grid[2][4] = 2
         grid[2][5] = 2
@@ -304,13 +343,23 @@ def on_update(delta_time):
                     grid[row][column] = 0
 
         player_x_coord, player_y_coord = start_coord_x, start_coord_y
-        map_setup = False
         bullet_collected1, bullet_collected2 = False, False
         bullet_activated1, bullet_activated2 = False, False
         bullet_amount = 0
 
+        if mapcounter == 1:
+            pushtile_x_coord.append(6)
+            pushtile_y_coord.append(3)
+
+        for i in range(len(pushtile_x_coord)):
+            pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80)
+            pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80)
+
+        map_setup = False
+
     # temporary
-    print(bullet_activated1, bullet_activated2)
+    print(player_x_coord, player_y_coord)
+    print(pushtile_x_coord, pushtile_y_coord)
     if mapcounter_cheat:
         mapcounter += 1
         map_setup = True
@@ -341,18 +390,8 @@ def on_draw():
             else:
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.LIGHT_GRAY)
 
-            """
-            if column%2 == 0:
-                if row % 2 == 0:
-                    arcade.draw_rectangle_filled(20 + (row * 40), 20 + (column * 40), 40, 40, arcade.color.GRAY)
-                else:
-                    arcade.draw_rectangle_filled(20 + (row * 40), 20 + (column * 40), 40, 40, arcade.color.BLACK)
-            else:
-                if row % 2 == 1:
-                    arcade.draw_rectangle_filled(20 + (row * 40), 20 + (column * 40), 40, 40, arcade.color.GRAY)
-                else:
-                    arcade.draw_rectangle_filled(20 + (row * 40), 20 + (column * 40), 40, 40, arcade.color.BLACK)
-            """
+    for i in range(len(pushtile_x_coord)):
+        arcade.draw_rectangle_filled(pushtile_x_pos[i], pushtile_y_pos[i], 80, 80, arcade.color.BRONZE)
 
     for i in range(bullet_count):
         arcade.draw_circle_filled(bullet_list_x[i], bullet_list_y[i], 5, arcade.color.YELLOW)
