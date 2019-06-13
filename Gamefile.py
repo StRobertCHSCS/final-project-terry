@@ -101,6 +101,7 @@ def bullet_collect2(y, x):
 def tile_check():
     global movable, player_speed, mapcounter, map_setup
     if up_pressed:
+
         if grid[player_y_coord + 1][player_x_coord] == 1:
             movable = False
         elif grid[player_y_coord + 1][player_x_coord] == 2:
@@ -115,8 +116,13 @@ def tile_check():
         elif grid[player_y_coord + 1][player_x_coord] == 7:
             movable = False
         else:
-            movable = True
-            player_speed = 10
+            for i in range(len(pushtile_y_coord)):
+                    if grid[pushtile_y_coord[i] + 1][pushtile_x_coord[i]] != 0 and player_x_coord == pushtile_x_coord[i] and player_y_coord == pushtile_y_coord[i] - 1:
+                        movable = False
+                    else:
+                        movable = True
+                        player_speed = 10
+
     elif down_pressed:
         if grid[player_y_coord - 1][player_x_coord] == 1:
             movable = False
@@ -169,33 +175,32 @@ def tile_check():
             movable = True
             player_speed = 10
 
+
+
+
     for i in range(len(pushtile_x_coord)):
-        if pushtile_x_coord[i] == player_x_coord and pushtile_y_coord[i] - 1 == player_y_coord and (up_pressed or not move_up):
-            print("true")
+        if pushtile_x_coord[i] == player_x_coord and pushtile_y_coord[i] - 1 == player_y_coord and (up_pressed or not move_up) and grid[pushtile_y_coord[i] + 1][pushtile_x_coord[i]] == 0:
             pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
             pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
             if y_move < 80:
                 pass
             else:
                 pushtile_y_coord[i] += 1
-        elif pushtile_x_coord[i] == player_x_coord and pushtile_y_coord[i] + 1 == player_y_coord and (down_pressed or not move_down):
-            print("true")
+        elif pushtile_x_coord[i] == player_x_coord and pushtile_y_coord[i] + 1 == player_y_coord and (down_pressed or not move_down) and grid[pushtile_y_coord[i] - 1][pushtile_x_coord[i]] == 0:
             pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
             pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
             if y_move > -80:
                 pass
             else:
                 pushtile_y_coord[i] -= 1
-        elif pushtile_y_coord[i] == player_y_coord and pushtile_x_coord[i] - 1 == player_x_coord and (right_pressed or not move_right):
-            print("true")
+        elif pushtile_y_coord[i] == player_y_coord and pushtile_x_coord[i] - 1 == player_x_coord and (right_pressed or not move_right) and grid[pushtile_y_coord[i]][pushtile_x_coord[i] + 1] == 0:
             pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
             pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
             if x_move < 80:
                 pass
             else:
                 pushtile_x_coord[i] += 1
-        elif pushtile_y_coord[i] == player_y_coord and pushtile_x_coord[i] + 1 == player_x_coord and (left_pressed or not move_left):
-            print("true")
+        elif pushtile_y_coord[i] == player_y_coord and pushtile_x_coord[i] + 1 == player_x_coord and (left_pressed or not move_left) and grid[pushtile_y_coord[i]][pushtile_x_coord[i] - 1] == 0:
             pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
             pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
             if x_move > -80:
@@ -211,7 +216,8 @@ def tile_check():
 def on_update(delta_time):
     global position_x, position_y, bullet_direction, bullet_count, bullet_index, bullet_timer, move_up, move_down, \
         move_right, move_left, x_move, y_move, player_x_coord, player_y_coord, mapcounter, map_setup, bullet_amount, \
-        bullet_collected1, bullet_collected2, bullet_activated1, bullet_activated2, start_coord_x, start_coord_y
+        bullet_collected1, bullet_collected2, bullet_activated1, bullet_activated2, start_coord_x, start_coord_y, \
+        pushtile_x_coord, pushtile_y_coord
 
     position_x, position_y = 40 + (player_x_coord * 80) + x_move, 40 + (player_y_coord * 80) + y_move
 
@@ -348,8 +354,9 @@ def on_update(delta_time):
         bullet_amount = 0
 
         if mapcounter == 1:
-            pushtile_x_coord.append(6)
-            pushtile_y_coord.append(3)
+            pushtile_y_coord, pushtile_x_coord = [3], [6]
+        else:
+            pushtile_y_coord, pushtile_x_coord = [], []
 
         for i in range(len(pushtile_x_coord)):
             pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80)
@@ -358,8 +365,6 @@ def on_update(delta_time):
         map_setup = False
 
     # temporary
-    print(player_x_coord, player_y_coord)
-    print(pushtile_x_coord, pushtile_y_coord)
     if mapcounter_cheat:
         mapcounter += 1
         map_setup = True
