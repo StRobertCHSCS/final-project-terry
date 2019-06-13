@@ -26,6 +26,7 @@ pushtile_x_coord = []
 pushtile_y_coord = []
 pushtile_x_pos = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 pushtile_y_pos = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+loop_break = False
 
 bullet_list_x, bullet_list_y, bullet_direction = [], [], []
 bullet_count = 0
@@ -42,6 +43,7 @@ wall = arcade.load_texture("images/wall.png")
 
 # temporary
 mapcounter_cheat = False
+temporary = "YEET"
 
 
 def door1(y, x):
@@ -99,7 +101,7 @@ def bullet_collect2(y, x):
 
 
 def tile_check():
-    global movable, player_speed, mapcounter, map_setup
+    global movable, player_speed, mapcounter, map_setup, loop_break
     if up_pressed:
         if grid[player_y_coord + 1][player_x_coord] == 1:
             movable = False
@@ -116,10 +118,14 @@ def tile_check():
             movable = False
         else:
             for i in range(len(pushtile_y_coord)):
+                if loop_break:
+                    loop_break = False
+                    break
                 for j in range(len(pushtile_x_coord)):
                     if pushtile_x_coord[i] == pushtile_x_coord[j] and pushtile_y_coord[i] == pushtile_y_coord[j] + 1 or grid[pushtile_y_coord[i] + 1][pushtile_x_coord[i]] != 0:
                         if player_x_coord == pushtile_x_coord[i] and player_y_coord == pushtile_y_coord[i] - 1:
                             movable = False
+                            loop_break = True
                             break
                         else:
                             movable = True
@@ -143,20 +149,18 @@ def tile_check():
             movable = False
         else:
             for i in range(len(pushtile_y_coord)):
+                if loop_break:
+                    loop_break = False
+                    break
                 for j in range(len(pushtile_x_coord)):
-                    print(pushtile_x_coord[i] == pushtile_x_coord[j])
-                    print(pushtile_y_coord[i] == pushtile_y_coord[j] - 1)
-                    print(grid[pushtile_y_coord[i] - 1][pushtile_x_coord[i]] != 0)
-                    print(player_x_coord == pushtile_x_coord[i])
-                    print(player_y_coord == pushtile_y_coord[i] + 1)
                     if pushtile_x_coord[i] == pushtile_x_coord[j] and pushtile_y_coord[i] == pushtile_y_coord[j] - 1 or grid[pushtile_y_coord[i] - 1][pushtile_x_coord[i]] != 0:
                         if player_x_coord == pushtile_x_coord[i] and player_y_coord == pushtile_y_coord[i] + 1:
                             movable = False
+                            loop_break = True
                             break
                         else:
                             movable = True
                             player_speed = 10
-
                     else:
                         movable = True
                         player_speed = 10
@@ -176,14 +180,21 @@ def tile_check():
             movable = False
         else:
             for i in range(len(pushtile_y_coord)):
+                if loop_break:
+                    loop_break = False
+                    break
                 for j in range(len(pushtile_x_coord)):
                     if pushtile_x_coord[i] + 1 == pushtile_x_coord[j] and pushtile_y_coord[i] == pushtile_y_coord[j] or grid[pushtile_y_coord[i]][pushtile_x_coord[i] + 1] != 0:
                         if player_x_coord == pushtile_x_coord[i] - 1 and player_y_coord == pushtile_y_coord[i]:
                             movable = False
+                            loop_break = True
                             break
                         else:
                             movable = True
                             player_speed = 10
+                    else:
+                        movable = True
+                        player_speed = 10
     elif left_pressed:
         if grid[player_y_coord][player_x_coord - 1] == 1:
             movable = False
@@ -200,14 +211,21 @@ def tile_check():
             movable = False
         else:
             for i in range(len(pushtile_y_coord)):
+                if loop_break:
+                    loop_break = False
+                    break
                 for j in range(len(pushtile_x_coord)):
                     if pushtile_x_coord[i] - 1 == pushtile_x_coord[j] and pushtile_y_coord[i] == pushtile_y_coord[j] or grid[pushtile_y_coord[i]][pushtile_x_coord[i] - 1] != 0:
                         if player_x_coord == pushtile_x_coord[i] + 1 and player_y_coord == pushtile_y_coord[i]:
                             movable = False
+                            loop_break = True
                             break
                         else:
                             movable = True
                             player_speed = 10
+                    else:
+                        movable = True
+                        player_speed = 10
 
     for i in range(len(pushtile_x_coord)):
         if pushtile_x_coord[i] == player_x_coord and pushtile_y_coord[i] - 1 == player_y_coord and (up_pressed or not move_up) and grid[pushtile_y_coord[i] + 1][pushtile_x_coord[i]] == 0:
