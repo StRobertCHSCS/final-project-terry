@@ -7,3 +7,8 @@ mapcounter_cheat set in beginning
 mapcounter_cheat in global
 
 mapcounter > 2 part
+
+
+
+
+print the coords of the push blocks to check the booleans of if char can move or not
