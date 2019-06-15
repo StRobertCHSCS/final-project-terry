@@ -39,7 +39,7 @@ char_model_up = arcade.load_texture("images/Model2_Up.png")
 char_model_down = arcade.load_texture("images/Model2_Down.png")
 char_model_right = arcade.load_texture("images/Model2_Right.png")
 char_model_left = arcade.load_texture("images/Model2_Left.png")
-wall = arcade.load_texture("images/wall.png")
+wall = arcade.load_texture("images/tile1.png")
 
 # temporary
 mapcounter_cheat = False
