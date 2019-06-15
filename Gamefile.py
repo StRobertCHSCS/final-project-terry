@@ -17,15 +17,10 @@ up_pressed, down_pressed, right_pressed, left_pressed, fire = False, False, Fals
 player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, False, False
 fire_up, fire_down, fire_right, fire_left = False, False, False, False
 
-map_setup = True
+map_setup = False
 mapcounter = 1
 
 grid = []
-
-pushtile_x_coord = []
-pushtile_y_coord = []
-pushtile_x_pos = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-pushtile_y_pos = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
 bullet_list_x, bullet_list_y, bullet_direction = [], [], []
 bullet_count = 0
@@ -38,7 +33,15 @@ char_model_up = arcade.load_texture("images/Model2_Up.png")
 char_model_down = arcade.load_texture("images/Model2_Down.png")
 char_model_right = arcade.load_texture("images/Model2_Right.png")
 char_model_left = arcade.load_texture("images/Model2_Left.png")
-wall = arcade.load_texture("images/wall.png")
+arrow = arcade.load_texture("images/arrow.png")
+tile0 = arcade.load_texture("images/tile0.png")
+tile1 = arcade.load_texture("images/tile1.png")
+tile2 = arcade.load_texture("images/tile2.jpg")
+tile3 = arcade.load_texture("images/tile3.png")
+tile4 = arcade.load_texture("images/tile4.png")
+tile5 = arcade.load_texture("images/tile5.png")
+tile6 = arcade.load_texture("images/tile6.gif")
+tile7 = arcade.load_texture("images/tile7.png")
 
 # temporary
 mapcounter_cheat = False
@@ -115,13 +118,8 @@ def tile_check():
         elif grid[player_y_coord + 1][player_x_coord] == 7:
             movable = False
         else:
-            for i in range(len(pushtile_y_coord)):
-                    if grid[pushtile_y_coord[i] + 1][pushtile_x_coord[i]] != 0 and player_x_coord == pushtile_x_coord[i] and player_y_coord == pushtile_y_coord[i] - 1:
-                        movable = False
-                        break
-                    else:
-                        movable = True
-                        player_speed = 10
+            movable = True
+            player_speed = 10
     elif down_pressed:
         if grid[player_y_coord - 1][player_x_coord] == 1:
             movable = False
@@ -137,13 +135,8 @@ def tile_check():
         elif grid[player_y_coord - 1][player_x_coord] == 7:
             movable = False
         else:
-            for i in range(len(pushtile_y_coord)):
-                    if grid[pushtile_y_coord[i] - 1][pushtile_x_coord[i]] != 0 and player_x_coord == pushtile_x_coord[i] and player_y_coord == pushtile_y_coord[i] + 1:
-                        movable = False
-                        break
-                    else:
-                        movable = True
-                        player_speed = 10
+            movable = True
+            player_speed = 10
     elif right_pressed:
         if grid[player_y_coord][player_x_coord + 1] == 1:
             movable = False
@@ -159,13 +152,8 @@ def tile_check():
         elif grid[player_y_coord][player_x_coord + 1] == 7:
             movable = False
         else:
-            for i in range(len(pushtile_y_coord)):
-                    if (grid[pushtile_y_coord[i]][pushtile_x_coord[i] + 1] != 0) and player_x_coord == pushtile_x_coord[i] - 1 and player_y_coord == pushtile_y_coord[i]:
-                        movable = False
-                        break
-                    else:
-                        movable = True
-                        player_speed = 10
+            movable = True
+            player_speed = 10
     elif left_pressed:
         if grid[player_y_coord][player_x_coord - 1] == 1:
             movable = False
@@ -181,43 +169,8 @@ def tile_check():
         elif grid[player_y_coord][player_x_coord - 1] == 7:
             movable = False
         else:
-            for i in range(len(pushtile_y_coord)):
-                    if grid[pushtile_y_coord[i]][pushtile_x_coord[i] - 1] != 0 and player_x_coord == pushtile_x_coord[i] + 1 and player_y_coord == pushtile_y_coord[i]:
-                        movable = False
-                        break
-                    else:
-                        movable = True
-                        player_speed = 10
-
-    for i in range(len(pushtile_x_coord)):
-        if pushtile_x_coord[i] == player_x_coord and pushtile_y_coord[i] - 1 == player_y_coord and (up_pressed or not move_up) and grid[pushtile_y_coord[i] + 1][pushtile_x_coord[i]] == 0:
-            pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
-            pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
-            if y_move < 80:
-                pass
-            else:
-                pushtile_y_coord[i] += 1
-        elif pushtile_x_coord[i] == player_x_coord and pushtile_y_coord[i] + 1 == player_y_coord and (down_pressed or not move_down) and grid[pushtile_y_coord[i] - 1][pushtile_x_coord[i]] == 0:
-            pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
-            pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
-            if y_move > -80:
-                pass
-            else:
-                pushtile_y_coord[i] -= 1
-        elif pushtile_y_coord[i] == player_y_coord and pushtile_x_coord[i] - 1 == player_x_coord and (right_pressed or not move_right) and grid[pushtile_y_coord[i]][pushtile_x_coord[i] + 1] == 0:
-            pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
-            pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
-            if x_move < 80:
-                pass
-            else:
-                pushtile_x_coord[i] += 1
-        elif pushtile_y_coord[i] == player_y_coord and pushtile_x_coord[i] + 1 == player_x_coord and (left_pressed or not move_left) and grid[pushtile_y_coord[i]][pushtile_x_coord[i] - 1] == 0:
-            pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
-            pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
-            if x_move > -80:
-                pass
-            else:
-                pushtile_x_coord[i] -= 1
+            movable = True
+            player_speed = 10
 
     if grid[player_y_coord][player_x_coord] == 6:
         mapcounter += 1
@@ -227,8 +180,7 @@ def tile_check():
 def on_update(delta_time):
     global position_x, position_y, bullet_direction, bullet_count, bullet_index, bullet_timer, move_up, move_down, \
         move_right, move_left, x_move, y_move, player_x_coord, player_y_coord, mapcounter, map_setup, bullet_amount, \
-        bullet_collected1, bullet_collected2, bullet_activated1, bullet_activated2, start_coord_x, start_coord_y, \
-        pushtile_x_coord, pushtile_y_coord
+        bullet_collected1, bullet_collected2, bullet_activated1, bullet_activated2, start_coord_x, start_coord_y
 
     position_x, position_y = 40 + (player_x_coord * 80) + x_move, 40 + (player_y_coord * 80) + y_move
 
@@ -311,7 +263,7 @@ def on_update(delta_time):
         grid[5][5] = 1
         grid[6][7] = 1
         grid[4][8] = 1
-
+        grid[3][6] = 1
         grid[2][3] = 2
         grid[2][4] = 2
         grid[2][5] = 2
@@ -360,22 +312,10 @@ def on_update(delta_time):
                     grid[row][column] = 0
 
         player_x_coord, player_y_coord = start_coord_x, start_coord_y
+        map_setup = False
         bullet_collected1, bullet_collected2 = False, False
         bullet_activated1, bullet_activated2 = False, False
         bullet_amount = 0
-
-        if mapcounter == 1:
-            pushtile_y_coord, pushtile_x_coord = [3], [6]
-        elif mapcounter == 2:
-            pushtile_y_coord, pushtile_x_coord = [3, 4, 7], [6, 2, 8]
-        else:
-            pushtile_y_coord, pushtile_x_coord = [], []
-
-        for i in range(len(pushtile_x_coord)):
-            pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80)
-            pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80)
-
-        map_setup = False
 
     # temporary
     if mapcounter_cheat:
@@ -390,30 +330,26 @@ def on_draw():
     for row in range(9):
         for column in range(16):
             if grid[row][column] == 0:
-                arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.GRAY_BLUE)
+                arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, tile0)
             elif grid[row][column] == 1:
-                arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, wall)
+                arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, tile1)
             elif grid[row][column] == 2:
-                arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.ALICE_BLUE)
+                arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, tile2)
             elif grid[row][column] == 3:
-                arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.YELLOW_ROSE)
+                arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, tile3)
             elif grid[row][column] == 4:
-                arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.BRONZE_YELLOW)
+                arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, tile4)
             elif grid[row][column] == 5:
-                arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.BROWN)
+                arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, tile5)
             elif grid[row][column] == 6:
-                arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.PURPLE_HEART)
+                arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, tile6)
             elif grid[row][column] == 7:
-                arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.WARM_BLACK)
+                arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, tile7)
             else:
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.LIGHT_GRAY)
 
-    for i in range(len(pushtile_x_coord)):
-        arcade.draw_rectangle_filled(pushtile_x_pos[i], pushtile_y_pos[i], 80, 80, arcade.color.BRONZE)
-
     for i in range(bullet_count):
-        arcade.draw_circle_filled(bullet_list_x[i], bullet_list_y[i], 5, arcade.color.YELLOW)
-    # arcade.draw_circle_filled(position_x, position_y, 25, arcade.color.BLUE)
+        arcade.draw_texture_rectangle(bullet_list_x[i], bullet_list_y[i], 87, 22.5, arrow)
 
     if fire_up:
         arcade.draw_text("up", position_x, position_y, arcade.color.BLACK, 12)
