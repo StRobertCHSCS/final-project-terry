@@ -4,8 +4,8 @@ import arcade
 WIDTH = 1280
 HEIGHT = 720
 
-player_x_coord = 1
-player_y_coord = 1
+player_x_coord = 2
+player_y_coord = 6
 start_coord_x = 1
 start_coord_y = 1
 player_speed = 10
@@ -259,21 +259,24 @@ def on_update(delta_time):
     if bullet_timer > 0:
         bullet_timer -= 1
 
+    # if mapcounter == 1:
+    #     grid[5][5] = 1
+    #     grid[6][7] = 1
+    #     grid[4][8] = 1
+    #     grid[3][6] = 1
+    #     grid[2][3] = 2
+    #     grid[2][4] = 2
+    #     grid[2][5] = 2
+    #     grid[2][6] = 2
+    #     grid[5][13] = 5
+    #     grid[6][13] = 6
+    #
+    #     bullet_collect1(3, 5)
+    #     bullet_activate1(3, 12)
     if mapcounter == 1:
-        grid[5][5] = 1
-        grid[6][7] = 1
-        grid[4][8] = 1
-        grid[3][6] = 1
-        grid[2][3] = 2
-        grid[2][4] = 2
-        grid[2][5] = 2
-        grid[2][6] = 2
-        grid[5][13] = 5
-        grid[6][13] = 6
+        print(player_y_coord, player_x_coord)
 
-        bullet_collect1(3, 5)
-        bullet_activate1(3, 12)
-
+        grid[2][13] = 6
     elif mapcounter == 2:
         start_coord_y, start_coord_x = 2, 2
 
@@ -351,32 +354,35 @@ def on_draw():
     for i in range(bullet_count):
         arcade.draw_texture_rectangle(bullet_list_x[i], bullet_list_y[i], 87, 22.5, arrow)
 
+    if mapcounter == 1:
+        arcade.draw_text("Welcome to the Escapade", 200, 430, arcade.color.WHITE, 30)
+        arcade.draw_text("The goal is to reach the portal at the end of each room", 200, 350, arcade.color.WHITE, 30)
+        arcade.draw_text("Use WASD to move around", 200, 270, arcade.color.WHITE, 30)
+        arcade.draw_text("Enter the portal to move to the next room ------->", 200, 190, arcade.color.WHITE, 30)
+    elif mapcounter == 2:
+        arcade.draw_text("Wall blocks are tiles that can not be passed through ---->", 120, 350, arcade.color.WHITE, 21)
+    elif mapcounter >= 3:
+        arcade.draw_text("Arrows can be collected and shot using the arrow keys", 100, 590, arcade.color.WHITE, 15)
+        arcade.draw_text("They can only pass through certain walls", 100, 430, arcade.color.WHITE, 15)
+        arcade.draw_text("Press R to reset the current room", 100, 350, arcade.color.WHITE, 15)
+
     if fire_up:
-        arcade.draw_text("up", position_x, position_y, arcade.color.BLACK, 12)
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
     elif fire_down:
-        arcade.draw_text("down", position_x, position_y, arcade.color.BLACK, 12)
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_down)
     elif fire_right:
-        arcade.draw_text("right", position_x, position_y, arcade.color.BLACK, 12)
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_right)
     elif fire_left:
-        arcade.draw_text("left", position_x, position_y, arcade.color.BLACK, 12)
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_left)
     elif player_idle_up:
-        arcade.draw_text("up", position_x, position_y, arcade.color.BLACK, 12)
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
     elif player_idle_down:
-        arcade.draw_text("down", position_x, position_y, arcade.color.BLACK, 12)
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_down)
     elif player_idle_right:
-        arcade.draw_text("right", position_x, position_y, arcade.color.BLACK, 12)
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_right)
     elif player_idle_left:
-        arcade.draw_text("left", position_x, position_y, arcade.color.BLACK, 12)
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_left)
     else:
-        arcade.draw_text("up", position_x, position_y, arcade.color.BLACK, 12)
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
 
 
@@ -416,7 +422,7 @@ def on_key_press(key, modifiers):
 
 def on_key_release(key, modifiers):
     global up_pressed, down_pressed, right_pressed, left_pressed, fire, player_idle_up, player_idle_down, \
-        player_idle_right, player_idle_left, fire_up, fire_down, fire_right, fire_left, mapcounter_cheat
+        player_idle_right, player_idle_left, fire_up, fire_down, fire_right, fire_left, map_setup, mapcounter_cheat
     if key == arcade.key.W:
         up_pressed = False
     if key == arcade.key.S:
@@ -439,6 +445,8 @@ def on_key_release(key, modifiers):
         fire_left = False
         fire = False
 
+    if key == arcade.key.R:
+        map_setup = True
     # temporary
     if key == arcade.key.KEY_0:
         mapcounter_cheat = False
