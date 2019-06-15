@@ -39,7 +39,7 @@ char_model_up = arcade.load_texture("images/Model2_Up.png")
 char_model_down = arcade.load_texture("images/Model2_Down.png")
 char_model_right = arcade.load_texture("images/Model2_Right.png")
 char_model_left = arcade.load_texture("images/Model2_Left.png")
-wall = arcade.load_texture("images/tile1.png")
+tile1 = arcade.load_texture("images/tile1.png")
 
 # temporary
 mapcounter_cheat = False
@@ -430,7 +430,7 @@ def on_draw():
             if grid[row][column] == 0:
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.GRAY_BLUE)
             elif grid[row][column] == 1:
-                arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, wall)
+                arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, tile1)
             elif grid[row][column] == 2:
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.ALICE_BLUE)
             elif grid[row][column] == 3:
