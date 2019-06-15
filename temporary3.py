@@ -27,6 +27,7 @@ pushtile_y_coord = []
 pushtile_x_pos = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 pushtile_y_pos = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 loop_break = False
+tile_x_move, tile_y_move = 0, 0
 
 bullet_list_x, bullet_list_y, bullet_direction = [], [], []
 bullet_count = 0
@@ -101,7 +102,7 @@ def bullet_collect2(y, x):
 
 
 def tile_check():
-    global movable, player_speed, mapcounter, map_setup, loop_break
+    global movable, player_speed, mapcounter, map_setup, loop_break, tile_x_move, tile_y_move
     if up_pressed:
         if grid[player_y_coord + 1][player_x_coord] == 1:
             movable = False
@@ -226,36 +227,39 @@ def tile_check():
                     else:
                         movable = True
                         player_speed = 10
-
     for i in range(len(pushtile_x_coord)):
-        if pushtile_x_coord[i] == player_x_coord and pushtile_y_coord[i] - 1 == player_y_coord and (up_pressed or not move_up) and grid[pushtile_y_coord[i] + 1][pushtile_x_coord[i]] == 0:
+        if pushtile_x_coord[i] == player_x_coord and pushtile_y_coord[i] - 1 == player_y_coord and (up_pressed or not move_up) and x_move == 0 and grid[pushtile_y_coord[i] + 1][pushtile_x_coord[i]] == 0:
             pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
             pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
-            if y_move < 80:
-                pass
+            if tile_y_move < 80:
+                tile_y_move += player_speed
             else:
                 pushtile_y_coord[i] += 1
-        elif pushtile_x_coord[i] == player_x_coord and pushtile_y_coord[i] + 1 == player_y_coord and (down_pressed or not move_down) and grid[pushtile_y_coord[i] - 1][pushtile_x_coord[i]] == 0:
+                tile_y_move = 0
+        elif pushtile_x_coord[i] == player_x_coord and pushtile_y_coord[i] + 1 == player_y_coord and (down_pressed or not move_down) and x_move == 0 and grid[pushtile_y_coord[i] - 1][pushtile_x_coord[i]] == 0:
             pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
             pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
-            if y_move > -80:
-                pass
+            if tile_y_move > -80:
+                tile_y_move -= player_speed
             else:
                 pushtile_y_coord[i] -= 1
-        elif pushtile_y_coord[i] == player_y_coord and pushtile_x_coord[i] - 1 == player_x_coord and (right_pressed or not move_right) and grid[pushtile_y_coord[i]][pushtile_x_coord[i] + 1] == 0:
+                tile_y_move = 0
+        elif pushtile_y_coord[i] == player_y_coord and pushtile_x_coord[i] - 1 == player_x_coord and (right_pressed or not move_right) and y_move == 0 and grid[pushtile_y_coord[i]][pushtile_x_coord[i] + 1] == 0:
             pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
             pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
-            if x_move < 80:
-                pass
+            if tile_x_move < 80:
+                tile_x_move += player_speed
             else:
                 pushtile_x_coord[i] += 1
-        elif pushtile_y_coord[i] == player_y_coord and pushtile_x_coord[i] + 1 == player_x_coord and (left_pressed or not move_left) and grid[pushtile_y_coord[i]][pushtile_x_coord[i] - 1] == 0:
+                tile_x_move = 0
+        elif pushtile_y_coord[i] == player_y_coord and pushtile_x_coord[i] + 1 == player_x_coord and (left_pressed or not move_left) and y_move == 0 and grid[pushtile_y_coord[i]][pushtile_x_coord[i] - 1] == 0:
             pushtile_x_pos[i] = 40 + (pushtile_x_coord[i] * 80) + x_move
             pushtile_y_pos[i] = 40 + (pushtile_y_coord[i] * 80) + y_move
-            if x_move > -80:
-                pass
+            if tile_x_move > -80:
+                tile_x_move -= player_speed
             else:
                 pushtile_x_coord[i] -= 1
+                tile_x_move = 0
 
     if grid[player_y_coord][player_x_coord] == 6:
         mapcounter += 1
@@ -488,15 +492,19 @@ def on_key_press(key, modifiers):
     if key == arcade.key.W:
         up_pressed = True
         player_idle_up, player_idle_down, player_idle_right, player_idle_left = True, False, False, False
-    if key == arcade.key.S:
+        down_pressed, right_pressed, left_pressed = False, False, False
+    elif key == arcade.key.S:
         down_pressed = True
         player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, True, False, False
-    if key == arcade.key.D:
+        up_pressed, right_pressed, left_pressed = False, False, False
+    elif key == arcade.key.D:
         right_pressed = True
         player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, True, False
-    if key == arcade.key.A:
+        up_pressed, down_pressed, left_pressed = False, False, False
+    elif key == arcade.key.A:
         left_pressed = True
         player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, False, True
+        up_pressed, down_pressed, right_pressed = False, False, False
 
     if key == arcade.key.UP:
         fire_up, fire_down, fire_right, fire_left = True, False, False, False
@@ -518,7 +526,7 @@ def on_key_press(key, modifiers):
 
 def on_key_release(key, modifiers):
     global up_pressed, down_pressed, right_pressed, left_pressed, fire, player_idle_up, player_idle_down, \
-        player_idle_right, player_idle_left, fire_up, fire_down, fire_right, fire_left, mapcounter_cheat
+        player_idle_right, player_idle_left, fire_up, fire_down, fire_right, fire_left, map_setup, mapcounter_cheat
     if key == arcade.key.W:
         up_pressed = False
     if key == arcade.key.S:
@@ -540,6 +548,9 @@ def on_key_release(key, modifiers):
     if key == arcade.key.LEFT:
         fire_left = False
         fire = False
+
+    if key == arcade.key.R:
+        map_setup = True
 
     # temporary
     if key == arcade.key.KEY_0:
