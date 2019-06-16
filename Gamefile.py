@@ -268,16 +268,6 @@ def on_update(delta_time):
     if bullet_timer > 0:
         bullet_timer -= 1
 
-    # if mapcounter == 1:
-    #     grid[5][5] = 1
-    #     grid[6][7] = 1
-    #     grid[4][8] = 1
-    #     grid[3][6] = 1
-    #     grid[5][13] = 5
-    #     grid[6][13] = 6
-    #
-    #     bullet_collect1(3, 5)
-    #     bullet_activate1(3, 12)
     if mapcounter == 1:
         grid[2][13] = 6
 
@@ -308,7 +298,7 @@ def on_update(delta_time):
 
         grid[2][13] = 6
 
-    elif mapcounter >= 4:
+    elif mapcounter == 4:
         start_coord_y, start_coord_x = 4, 2
 
         for i in range(1, 5):
@@ -338,6 +328,48 @@ def on_update(delta_time):
         door1(3, 8)
         door2(1, 3)
         door3(5, 8)
+
+    elif mapcounter >= 5:
+        start_coord_y, start_coord_x = 2, 2
+
+        for i in range(1, 4):
+            grid[6][i] = 1
+        for i in range(5, 9):
+            grid[6][i] = 1
+        for i in range(2, 5):
+            grid[4][i] = 1
+        for i in range(9, 15):
+            grid[4][i] = 1
+        for i in range(4, 10):
+            grid[2][i] = 1
+        grid[7][5] = 1
+        grid[7][10] = 1
+        grid[6][10] = 1
+        grid[6][12] = 1
+        grid[6][13] = 1
+        grid[5][7] = 1
+        grid[5][12] = 1
+        grid[4][6] = 1
+        grid[4][7] = 1
+        grid[3][4] = 1
+        grid[2][11] = 1
+        grid[1][7] = 1
+        grid[1][11] = 1
+
+        grid[7][3] = 5
+        grid[1][5] = 5
+
+        grid[2][13] = 6
+
+        bullet_collect1(7, 6)
+        bullet_collect2(5, 13)
+
+        bullet_activate1(1, 6)
+        bullet_activate2(7, 1)
+
+        door1(3, 11)
+        door2(1, 4)
+        door3(7, 8)
 
     if map_setup:
         for row in range(9):
@@ -498,7 +530,7 @@ def on_mouse_press(x, y, button, modifiers):
 
 
 def setup():
-    arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
+    arcade.open_window(WIDTH, HEIGHT, "Escapade")
     arcade.set_background_color(arcade.color.GRAY)
     arcade.schedule(on_update, 1/60)
 
