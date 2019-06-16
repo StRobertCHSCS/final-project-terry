@@ -14,8 +14,9 @@ move_up, move_down, move_right, move_left = True, True, True, True
 movable = True
 
 up_pressed, down_pressed, right_pressed, left_pressed, fire = False, False, False, False, False
-player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, False, False
 fire_up, fire_down, fire_right, fire_left = False, False, False, False
+
+player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, False, False
 
 map_setup = False
 mapcounter = 1
@@ -33,6 +34,15 @@ char_model_up = arcade.load_texture("images/Model2_Up.png")
 char_model_down = arcade.load_texture("images/Model2_Down.png")
 char_model_right = arcade.load_texture("images/Model2_Right.png")
 char_model_left = arcade.load_texture("images/Model2_Left.png")
+upwalk1 = arcade.load_texture("images/upwalk1.png")
+upwalk2 = arcade.load_texture("images/upwalk2.png")
+downwalk1 = arcade.load_texture("images/downwalk1.png")
+downwalk2 = arcade.load_texture("images/downwalk2.png")
+rightwalk1 = arcade.load_texture("images/rightwalk1.png")
+rightwalk2 = arcade.load_texture("images/rightwalk2.png")
+leftwalk1 = arcade.load_texture("images/leftwalk1.png")
+leftwalk2 = arcade.load_texture("images/leftwalk2.png")
+
 tile0 = arcade.load_texture("images/tile0.png")
 tile1 = arcade.load_texture("images/tile1.png")
 tile3 = arcade.load_texture("images/tile3.png")
@@ -40,6 +50,7 @@ tile4 = arcade.load_texture("images/tile4.png")
 tile5 = arcade.load_texture("images/tile5.png")
 tile6 = arcade.load_texture("images/tile6.gif")
 tile7 = arcade.load_texture("images/tile7.png")
+
 arrow_up = arcade.load_texture("images/arrow_up.png")
 arrow_down = arcade.load_texture("images/arrow_down.png")
 arrow_right = arcade.load_texture("images/arrow_right.png")
@@ -189,7 +200,8 @@ def tile_check():
 def on_update(delta_time):
     global position_x, position_y, bullet_direction, bullet_count, bullet_index, bullet_timer, move_up, move_down, \
         move_right, move_left, x_move, y_move, player_x_coord, player_y_coord, mapcounter, map_setup, bullet_amount, \
-        bullet_collected1, bullet_collected2, bullet_activated1, bullet_activated2, start_coord_x, start_coord_y
+        bullet_collected1, bullet_collected2, bullet_activated1, bullet_activated2, start_coord_x, start_coord_y, \
+        player_idle_up, player_idle_down, player_idle_right, player_idle_left
 
     position_x, position_y = 40 + (player_x_coord * 80) + x_move, 40 + (player_y_coord * 80) + y_move
 
@@ -387,6 +399,15 @@ def on_update(delta_time):
         bullet_activated1, bullet_activated2 = False, False
         bullet_amount = 0
 
+    if y_move > 0:
+        player_idle_up, player_idle_down, player_idle_right, player_idle_left = True, False, False, False
+    elif y_move < 0:
+        player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, True, False, False
+    elif x_move > 0:
+        player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, True, False
+    elif x_move < 0:
+        player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, False, True
+
     # temporary
     if mapcounter_cheat:
         mapcounter += 1
@@ -448,7 +469,12 @@ def on_draw():
     elif fire_left:
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_left)
     elif player_idle_up:
-        arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
+        if 0 > y_move >= 40:
+            pass
+        elif 40 > y_move > 80:
+            pass
+        else:
+            arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
     elif player_idle_down:
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_down)
     elif player_idle_right:
@@ -457,7 +483,6 @@ def on_draw():
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_left)
     else:
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
-
 
 def on_key_press(key, modifiers):
     global up_pressed, down_pressed, right_pressed, left_pressed, fire, player_idle_up, player_idle_down, \
