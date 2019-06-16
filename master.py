@@ -30,6 +30,9 @@ bullet_index = []
 bullet_amount = 0
 bullet_collected1, bullet_collected2, bullet_activated1, bullet_activated2 = False, False, False, False
 
+counter = 0
+countertime = 0
+
 char_model_up = arcade.load_texture("images/Model2_Up.png")
 char_model_down = arcade.load_texture("images/Model2_Down.png")
 char_model_right = arcade.load_texture("images/Model2_Right.png")
@@ -56,8 +59,13 @@ arrow_down = arcade.load_texture("images/arrow_down.png")
 arrow_right = arcade.load_texture("images/arrow_right.png")
 arrow_left = arcade.load_texture("images/arrow_left.png")
 
-# temporary
-mapcounter_cheat = False
+def count():
+    global counter, countertime
+    if countertime == 60:
+        counter += 1
+        countertime = 0
+    else:
+        countertime += 1
 
 
 def door1(y, x):
@@ -296,6 +304,7 @@ def on_update(delta_time):
 
     elif mapcounter == 3:
         start_coord_y, start_coord_x = 2, 2
+        count()
 
         grid[1][8] = 1
         grid[3][8] = 1
@@ -312,6 +321,7 @@ def on_update(delta_time):
 
     elif mapcounter == 4:
         start_coord_y, start_coord_x = 4, 2
+        count()
 
         for i in range(1, 5):
             grid[2][i] = 1
@@ -341,8 +351,9 @@ def on_update(delta_time):
         door2(1, 3)
         door3(5, 8)
 
-    elif mapcounter >= 5:
+    elif mapcounter == 5:
         start_coord_y, start_coord_x = 2, 2
+        count()
 
         for i in range(1, 4):
             grid[6][i] = 1
@@ -382,6 +393,13 @@ def on_update(delta_time):
         door1(3, 11)
         door2(1, 4)
         door3(7, 8)
+    elif mapcounter >= 6:
+        start_coord_y, start_coord_x = 6, 2
+        bullet_collect1(7, 1)
+        bullet_collect2(7, 14)
+
+        bullet_collected1 = False
+        bullet_collected2 = False
 
     if map_setup:
         for row in range(9):
@@ -407,11 +425,6 @@ def on_update(delta_time):
         player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, True, False
     elif x_move < 0:
         player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, False, True
-
-    # temporary
-    if mapcounter_cheat:
-        mapcounter += 1
-        map_setup = True
 
 
 def on_draw():
@@ -459,6 +472,9 @@ def on_draw():
         arcade.draw_text("They can only pass through certain walls", 100, 430, arcade.color.WHITE, 15)
         arcade.draw_text("Press R to reset the current room", 100, 400, arcade.color.WHITE, 15)
         arcade.draw_text("Hit the target with the arrow to move on", 840, 590, arcade.color.WHITE, 15)
+    elif mapcounter >= 6:
+        arcade.draw_text("Congratulations!", 500, 590, arcade.color.WHITE, 30)
+        arcade.draw_text("Your final score is " + str(counter) + ".", 475, 510, arcade.color.WHITE, 30)
 
     if fire_up:
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
@@ -469,24 +485,39 @@ def on_draw():
     elif fire_left:
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_left)
     elif player_idle_up:
-        if 0 > y_move >= 40:
-            pass
-        elif 40 > y_move > 80:
-            pass
+        if 0 < y_move <= 40:
+            arcade.draw_texture_rectangle(position_x, position_y, 56, 80, upwalk1)
+        elif 40 < y_move < 80:
+            arcade.draw_texture_rectangle(position_x, position_y, 56, 80, upwalk2)
         else:
             arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
     elif player_idle_down:
-        arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_down)
+        if -40 <= y_move < 0:
+            arcade.draw_texture_rectangle(position_x, position_y, 56, 80, downwalk1)
+        elif -80 < y_move < -40:
+            arcade.draw_texture_rectangle(position_x, position_y, 56, 80, downwalk2)
+        else:
+            arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_down)
     elif player_idle_right:
-        arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_right)
+        if 0 < x_move <= 40:
+            arcade.draw_texture_rectangle(position_x, position_y, 56, 80, rightwalk1)
+        elif 40 < x_move < 80:
+            arcade.draw_texture_rectangle(position_x, position_y, 56, 80, rightwalk2)
+        else:
+            arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_right)
     elif player_idle_left:
-        arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_left)
+        if -40 <= x_move < 0:
+            arcade.draw_texture_rectangle(position_x, position_y, 56, 80, leftwalk1)
+        elif -80 < x_move < -40:
+            arcade.draw_texture_rectangle(position_x, position_y, 56, 80, leftwalk2)
+        else:
+            arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_left)
     else:
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
 
 def on_key_press(key, modifiers):
     global up_pressed, down_pressed, right_pressed, left_pressed, fire, player_idle_up, player_idle_down, \
-        player_idle_right, player_idle_left, fire_up, fire_down, fire_right, fire_left, mapcounter_cheat
+        player_idle_right, player_idle_left, fire_up, fire_down, fire_right, fire_left
     if key == arcade.key.W:
         up_pressed = True
         player_idle_up, player_idle_down, player_idle_right, player_idle_left = True, False, False, False
@@ -513,14 +544,10 @@ def on_key_press(key, modifiers):
         fire_up, fire_down, fire_right, fire_left = False, False, False, True
         fire = True
 
-    # temporary
-    if key == arcade.key.KEY_0:
-        mapcounter_cheat = True
-
 
 def on_key_release(key, modifiers):
     global up_pressed, down_pressed, right_pressed, left_pressed, fire, player_idle_up, player_idle_down, \
-        player_idle_right, player_idle_left, fire_up, fire_down, fire_right, fire_left, map_setup, mapcounter_cheat
+        player_idle_right, player_idle_left, fire_up, fire_down, fire_right, fire_left, map_setup
     if key == arcade.key.W:
         up_pressed = False
     if key == arcade.key.S:
@@ -545,9 +572,6 @@ def on_key_release(key, modifiers):
 
     if key == arcade.key.R:
         map_setup = True
-    # temporary
-    if key == arcade.key.KEY_0:
-        mapcounter_cheat = False
 
 
 def on_mouse_press(x, y, button, modifiers):
