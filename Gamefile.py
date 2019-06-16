@@ -33,15 +33,17 @@ char_model_up = arcade.load_texture("images/Model2_Up.png")
 char_model_down = arcade.load_texture("images/Model2_Down.png")
 char_model_right = arcade.load_texture("images/Model2_Right.png")
 char_model_left = arcade.load_texture("images/Model2_Left.png")
-arrow = arcade.load_texture("images/arrow.png")
 tile0 = arcade.load_texture("images/tile0.png")
 tile1 = arcade.load_texture("images/tile1.png")
-tile2 = arcade.load_texture("images/tile2.jpg")
 tile3 = arcade.load_texture("images/tile3.png")
 tile4 = arcade.load_texture("images/tile4.png")
 tile5 = arcade.load_texture("images/tile5.png")
 tile6 = arcade.load_texture("images/tile6.gif")
 tile7 = arcade.load_texture("images/tile7.png")
+arrow_up = arcade.load_texture("images/arrow_up.png")
+arrow_down = arcade.load_texture("images/arrow_down.png")
+arrow_right = arcade.load_texture("images/arrow_right.png")
+arrow_left = arcade.load_texture("images/arrow_left.png")
 
 # temporary
 mapcounter_cheat = False
@@ -55,6 +57,13 @@ def door1(y, x):
 
 
 def door2(y, x):
+    if bullet_activated2:
+        grid[y][x] = 0
+    else:
+        grid[y][x] = 7
+
+
+def door3(y, x):
     if bullet_activated2:
         grid[y][x] = 0
     else:
@@ -112,7 +121,7 @@ def tile_check():
         elif grid[player_y_coord + 1][player_x_coord] == 3:
             movable = True
         elif grid[player_y_coord + 1][player_x_coord] == 4:
-            pass
+            movable = True
         elif grid[player_y_coord + 1][player_x_coord] == 5:
             movable = False
         elif grid[player_y_coord + 1][player_x_coord] == 7:
@@ -129,7 +138,7 @@ def tile_check():
         elif grid[player_y_coord - 1][player_x_coord] == 3:
             movable = True
         elif grid[player_y_coord - 1][player_x_coord] == 4:
-            pass
+            movable = True
         elif grid[player_y_coord - 1][player_x_coord] == 5:
             movable = False
         elif grid[player_y_coord - 1][player_x_coord] == 7:
@@ -146,7 +155,7 @@ def tile_check():
         elif grid[player_y_coord][player_x_coord + 1] == 3:
             movable = True
         elif grid[player_y_coord][player_x_coord + 1] == 4:
-            pass
+            movable = True
         elif grid[player_y_coord][player_x_coord + 1] == 5:
             movable = False
         elif grid[player_y_coord][player_x_coord + 1] == 7:
@@ -163,7 +172,7 @@ def tile_check():
         elif grid[player_y_coord][player_x_coord - 1] == 3:
             movable = True
         elif grid[player_y_coord][player_x_coord - 1] == 4:
-            pass
+            movable = True
         elif grid[player_y_coord][player_x_coord - 1] == 5:
             movable = False
         elif grid[player_y_coord][player_x_coord - 1] == 7:
@@ -246,7 +255,7 @@ def on_update(delta_time):
         elif bullet_direction[i] == "left":
             bullet_list_x[i] -= 20
 
-        if grid[bullet_list_y[i]//80][bullet_list_x[i]//80] == 1:
+        if grid[bullet_list_y[i]//80][bullet_list_x[i]//80] == 1 or grid[bullet_list_y[i]//80][bullet_list_x[i]//80] == 7:
             bullet_index.append(i)
 
     for _ in bullet_index:
@@ -264,20 +273,15 @@ def on_update(delta_time):
     #     grid[6][7] = 1
     #     grid[4][8] = 1
     #     grid[3][6] = 1
-    #     grid[2][3] = 2
-    #     grid[2][4] = 2
-    #     grid[2][5] = 2
-    #     grid[2][6] = 2
     #     grid[5][13] = 5
     #     grid[6][13] = 6
     #
     #     bullet_collect1(3, 5)
     #     bullet_activate1(3, 12)
     if mapcounter == 1:
-        print(player_y_coord, player_x_coord)
-
         grid[2][13] = 6
-    elif mapcounter == 2:
+
+    if mapcounter == 2:
         start_coord_y, start_coord_x = 2, 2
 
         for i in range(4):
@@ -288,7 +292,7 @@ def on_update(delta_time):
 
         grid[6][13] = 6
 
-    elif mapcounter >= 3:
+    elif mapcounter == 3:
         start_coord_y, start_coord_x = 2, 2
 
         grid[1][8] = 1
@@ -303,6 +307,37 @@ def on_update(delta_time):
         door1(2, 8)
 
         grid[2][13] = 6
+
+    elif mapcounter >= 4:
+        start_coord_y, start_coord_x = 4, 2
+
+        for i in range(1, 5):
+            grid[2][i] = 1
+            grid[6][i] = 1
+        for i in range(1, 4):
+            grid[i][6] = 1
+            grid[i][9] = 1
+            grid[i][11] = 1
+            grid[8 - i][6] = 1
+            grid[8 - i][9] = 1
+            grid[8 - i][11] = 1
+        grid[5][7] = 1
+        grid[3][7] = 1
+
+        grid[7][4] = 5
+        grid[1][4] = 5
+
+        grid[1][7] = 6
+
+        bullet_collect1(7, 7)
+        bullet_collect2(1, 14)
+
+        bullet_activate1(1, 1)
+        bullet_activate2(7, 1)
+
+        door1(3, 8)
+        door2(1, 3)
+        door3(5, 8)
 
     if map_setup:
         for row in range(9):
@@ -336,8 +371,6 @@ def on_draw():
                 arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, tile0)
             elif grid[row][column] == 1:
                 arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, tile1)
-            elif grid[row][column] == 2:
-                arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, tile2)
             elif grid[row][column] == 3:
                 arcade.draw_texture_rectangle(40 + (column * 80), 40 + (row * 80), 80, 80, tile3)
             elif grid[row][column] == 4:
@@ -352,7 +385,14 @@ def on_draw():
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.LIGHT_GRAY)
 
     for i in range(bullet_count):
-        arcade.draw_texture_rectangle(bullet_list_x[i], bullet_list_y[i], 87, 22.5, arrow)
+        if bullet_direction[i] == "up":
+            arcade.draw_texture_rectangle(bullet_list_x[i], bullet_list_y[i], 22.5, 87, arrow_up)
+        elif bullet_direction[i] == "down":
+            arcade.draw_texture_rectangle(bullet_list_x[i], bullet_list_y[i], 22.5, 87, arrow_down)
+        elif bullet_direction[i] == "right":
+            arcade.draw_texture_rectangle(bullet_list_x[i], bullet_list_y[i], 87, 22.5, arrow_right)
+        elif bullet_direction[i] == "left":
+            arcade.draw_texture_rectangle(bullet_list_x[i], bullet_list_y[i], 87, 22.5, arrow_left)
 
     if mapcounter == 1:
         arcade.draw_text("Welcome to the Escapade", 200, 430, arcade.color.WHITE, 30)
@@ -361,10 +401,11 @@ def on_draw():
         arcade.draw_text("Enter the portal to move to the next room ------->", 200, 190, arcade.color.WHITE, 30)
     elif mapcounter == 2:
         arcade.draw_text("Wall blocks are tiles that can not be passed through ---->", 120, 350, arcade.color.WHITE, 21)
-    elif mapcounter >= 3:
+    elif mapcounter == 3:
         arcade.draw_text("Arrows can be collected and shot using the arrow keys", 100, 590, arcade.color.WHITE, 15)
         arcade.draw_text("They can only pass through certain walls", 100, 430, arcade.color.WHITE, 15)
-        arcade.draw_text("Press R to reset the current room", 100, 350, arcade.color.WHITE, 15)
+        arcade.draw_text("Press R to reset the current room", 100, 400, arcade.color.WHITE, 15)
+        arcade.draw_text("Hit the target with the arrow to move on", 840, 590, arcade.color.WHITE, 15)
 
     if fire_up:
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
