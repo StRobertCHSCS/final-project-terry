@@ -9,36 +9,36 @@ Date:        17/06/2019
 """
 import arcade
 
-
+# sets the height and width of the window of the game
 WIDTH = 1280
 HEIGHT = 720
-
+# controls where the player is and whether or not they can move
 player_x_coord = 2
 player_y_coord = 6
 player_speed = 10
 x_move, y_move = 0, 0
 move_up, move_down, move_right, move_left = True, True, True, True
 movable = True
-
+# controls which direction the player and the bullet should go
 up_pressed, down_pressed, right_pressed, left_pressed, fire = False, False, False, False, False
 fire_up, fire_down, fire_right, fire_left = False, False, False, False
 player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, False, False
-
+# controls what map the game is currently in
 map_setup = False
 mapcounter = 1
-
+# sets the grid to be turned into a 2D grid
 grid = []
-
+# code used for the bullet
 bullet_list_x, bullet_list_y, bullet_direction = [], [], []
 bullet_count = 0
 bullet_timer = 0
 bullet_index = []
 bullet_amount = 0
 bullet_collected1, bullet_collected2, bullet_activated1, bullet_activated2 = False, False, False, False
-
+# variables used for score counter
 counter = 0
 countertime = 0
-
+# images used for the player model
 char_model_up = arcade.load_texture("images/Model2_Up.png")
 char_model_down = arcade.load_texture("images/Model2_Down.png")
 char_model_right = arcade.load_texture("images/Model2_Right.png")
@@ -51,7 +51,7 @@ rightwalk1 = arcade.load_texture("images/rightwalk1.png")
 rightwalk2 = arcade.load_texture("images/rightwalk2.png")
 leftwalk1 = arcade.load_texture("images/leftwalk1.png")
 leftwalk2 = arcade.load_texture("images/leftwalk2.png")
-
+# images used for the tiles
 tile0 = arcade.load_texture("images/tile0.png")
 tile1 = arcade.load_texture("images/tile1.png")
 tile3 = arcade.load_texture("images/tile3.png")
@@ -59,13 +59,14 @@ tile4 = arcade.load_texture("images/tile4.png")
 tile5 = arcade.load_texture("images/tile5.png")
 tile6 = arcade.load_texture("images/tile6.gif")
 tile7 = arcade.load_texture("images/tile7.png")
-
+# images used for the arrows
 arrow_up = arcade.load_texture("images/arrow_up.png")
 arrow_down = arcade.load_texture("images/arrow_down.png")
 arrow_right = arcade.load_texture("images/arrow_right.png")
 arrow_left = arcade.load_texture("images/arrow_left.png")
 
 
+# function used for timing (score)
 def count():
     global counter, countertime
     if countertime == 60:
@@ -75,6 +76,7 @@ def count():
         countertime += 1
 
 
+# functions used to control the door tile
 def door1(y, x):
     if bullet_activated1:
         grid[y][x] = 0
@@ -96,6 +98,7 @@ def door3(y, x):
         grid[y][x] = 7
 
 
+# functions which controls whether doors should be open or not
 def bullet_activate1(y, x):
     global bullet_activated1
     grid[y][x] = 3
@@ -114,6 +117,7 @@ def bullet_activate2(y, x):
             bullet_activated2 = True
 
 
+# functions which controls whether or not the player has picked up an arrow to fire
 def bullet_collect1(y, x):
     global bullet_collected1, bullet_amount
     if not bullet_collected1:
@@ -136,8 +140,10 @@ def bullet_collect2(y, x):
         bullet_amount += 1
 
 
+# function that determines what happens when the player walks into a tile
 def tile_check():
     global movable, player_speed, mapcounter, map_setup
+    # if the player is moving upwards
     if up_pressed:
         if grid[player_y_coord + 1][player_x_coord] == 1:
             movable = False
@@ -155,6 +161,7 @@ def tile_check():
         else:
             movable = True
             player_speed = 10
+    # if the player is moving downwards
     elif down_pressed:
         if grid[player_y_coord - 1][player_x_coord] == 1:
             movable = False
@@ -172,6 +179,7 @@ def tile_check():
         else:
             movable = True
             player_speed = 10
+    # if the player is moving to the right
     elif right_pressed:
         if grid[player_y_coord][player_x_coord + 1] == 1:
             movable = False
@@ -189,6 +197,7 @@ def tile_check():
         else:
             movable = True
             player_speed = 10
+    # if the player is moving to the left
     elif left_pressed:
         if grid[player_y_coord][player_x_coord - 1] == 1:
             movable = False
@@ -207,20 +216,24 @@ def tile_check():
             movable = True
             player_speed = 10
 
+    # if the player has entered the portal
     if grid[player_y_coord][player_x_coord] == 6:
         mapcounter += 1
         map_setup = True
 
 
+# controls the logistics of the game
 def on_update(delta_time):
     global position_x, position_y, bullet_direction, bullet_count, bullet_index, bullet_timer, move_up, move_down, \
         move_right, move_left, x_move, y_move, player_x_coord, player_y_coord, mapcounter, map_setup, bullet_amount, \
         bullet_collected1, bullet_collected2, bullet_activated1, bullet_activated2, start_coord_x, start_coord_y, \
         player_idle_up, player_idle_down, player_idle_right, player_idle_left
 
+    # controls where the player is
     position_x, position_y = 40 + (player_x_coord * 80) + x_move, 40 + (player_y_coord * 80) + y_move
 
     tile_check()
+    # controls which the direction the player is moving
     if up_pressed and move_down and move_right and move_left and movable or not move_up:
         if y_move < 80:
             y_move += player_speed
@@ -254,7 +267,7 @@ def on_update(delta_time):
             move_left = True
             x_move = 0
 
-    # bullet code
+    # code that controls the arrows (direction, movement, whether or not the arrow should stop being drawn)
     if fire and bullet_amount > 0 and bullet_timer == 0:
         if fire_up:
             bullet_direction.append("up")
@@ -295,6 +308,7 @@ def on_update(delta_time):
     if bullet_timer > 0:
         bullet_timer -= 1
 
+    # controls what tiles are to be drawn depending on what map the game is in
     if mapcounter == 1:
         grid[2][13] = 6
 
@@ -408,6 +422,7 @@ def on_update(delta_time):
         bullet_collected1 = False
         bullet_collected2 = False
 
+    # resets the game map
     if map_setup:
         for row in range(9):
             for column in range(16):
@@ -437,7 +452,7 @@ def on_update(delta_time):
 def on_draw():
     global row, column
     arcade.start_render()
-    # Draw in here...
+    # controls which tile images should be drawn on the grid
     for row in range(9):
         for column in range(16):
             if grid[row][column] == 0:
@@ -457,6 +472,7 @@ def on_draw():
             else:
                 arcade.draw_rectangle_filled(40 + (column * 80), 40 + (row * 80), 80, 80, arcade.color.LIGHT_GRAY)
 
+    # controls the arrow drawing
     for i in range(bullet_count):
         if bullet_direction[i] == "up":
             arcade.draw_texture_rectangle(bullet_list_x[i], bullet_list_y[i], 22.5, 87, arrow_up)
@@ -467,6 +483,7 @@ def on_draw():
         elif bullet_direction[i] == "left":
             arcade.draw_texture_rectangle(bullet_list_x[i], bullet_list_y[i], 87, 22.5, arrow_left)
 
+    # controls the text drawing (depending what map the game is in)
     if mapcounter == 1:
         arcade.draw_text("Welcome to the Escapade", 200, 430, arcade.color.WHITE, 30)
         arcade.draw_text("The goal is to reach the portal at the end of each room", 200, 350, arcade.color.WHITE, 30)
@@ -483,6 +500,7 @@ def on_draw():
         arcade.draw_text("Congratulations!", 500, 590, arcade.color.WHITE, 30)
         arcade.draw_text("Your final score is " + str(counter) + ".", 475, 510, arcade.color.WHITE, 30)
 
+    # determine which direction the player is facing
     if fire_up:
         arcade.draw_texture_rectangle(position_x, position_y, 56, 80, char_model_up)
     elif fire_down:
@@ -597,6 +615,7 @@ def setup():
     window.on_key_release = on_key_release
     window.on_mouse_press = on_mouse_press
 
+    # sets the 2D list to be used for the grid
     for row in range(9):
         grid.append([])
         for column in range(16):
