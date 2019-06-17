@@ -1,3 +1,12 @@
+"""
+-----------------------------------------------------------------------------
+Name:        master.py
+Purpose:     Video game of solving puzzles and progressing through rules
+
+Author:      Terry.Kim
+Date:        17/06/2019
+-----------------------------------------------------------------------------
+"""
 import arcade
 
 
@@ -6,8 +15,6 @@ HEIGHT = 720
 
 player_x_coord = 2
 player_y_coord = 6
-start_coord_x = 1
-start_coord_y = 1
 player_speed = 10
 x_move, y_move = 0, 0
 move_up, move_down, move_right, move_left = True, True, True, True
@@ -15,7 +22,6 @@ movable = True
 
 up_pressed, down_pressed, right_pressed, left_pressed, fire = False, False, False, False, False
 fire_up, fire_down, fire_right, fire_left = False, False, False, False
-
 player_idle_up, player_idle_down, player_idle_right, player_idle_left = False, False, False, False
 
 map_setup = False
@@ -58,6 +64,7 @@ arrow_up = arcade.load_texture("images/arrow_up.png")
 arrow_down = arcade.load_texture("images/arrow_down.png")
 arrow_right = arcade.load_texture("images/arrow_right.png")
 arrow_left = arcade.load_texture("images/arrow_left.png")
+
 
 def count():
     global counter, countertime
@@ -412,10 +419,10 @@ def on_update(delta_time):
                     grid[row][column] = 0
 
         player_x_coord, player_y_coord = start_coord_x, start_coord_y
-        map_setup = False
         bullet_collected1, bullet_collected2 = False, False
         bullet_activated1, bullet_activated2 = False, False
         bullet_amount = 0
+        map_setup = False
 
     if y_move > 0:
         player_idle_up, player_idle_down, player_idle_right, player_idle_left = True, False, False, False
